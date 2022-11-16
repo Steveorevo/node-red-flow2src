@@ -1,0 +1,164 @@
+<style>
+    .red-ui-tray-content #dialog-form {
+    white-space:nowrap;
+}
+.full-row .red-ui-typedInput-container {
+    min-width: 70%;
+}
+.col input {
+    min-width: 100%;
+}
+.sml-lbl {
+    height: 66px;
+}
+.sml-lbl label {
+    font-size: smaller;
+    margin-bottom: 0px;
+    display: block!important;
+}
+.reg-lbl label {
+    white-space: nowrap;
+    margin-top: 5px;
+    height: 0px;
+}
+.red-ui-editor .form-row label.full-lbl {
+    white-space: normal;
+    width: 100%;
+}
+.col {
+    float: left;
+    margin-right: 5px;
+    min-height: 36px;
+}
+.col .red-ui-typedInput-container {
+    width: 100%!important;
+}
+.col-50 {
+    width: 50%;
+}
+.col-33 {
+    width: 33%;
+}
+.col-66 {
+    width: 66%;
+}
+.col-25 {
+    width: 25%;
+}
+.col-75 {
+    width: 75%;
+}
+.col-100 .red-ui-typedInput-container {
+    width: 70%!important;
+}
+.col-100.no-label .red-ui-typedInput-container {
+    width: 100%!important;
+}
+.txtarea {
+    padding-bottom: 26px;
+}
+.txtarea label {
+    vertical-align: top;
+    margin-top: 3px;
+}
+.txtarea  textarea {
+    width: 70%;
+    margin-bottom: -28px!important;
+}
+.btn-regular {
+    margin-bottom: 14px!important;
+}
+.red-ui-editableList-item-content {
+    display: inline-block;
+    margin-bottom: -6px;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+}
+.red-ui-editableList-item-content .sml-lbl {
+    height: auto;
+}
+
+</style>
+<script type="text/html" data-template-name="flow2src">
+        <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div id="node-props" style="width: 460px;">
+                <div class="form-row">
+            <div class="col-100 reg-lbl">
+                <label class="full-lbl">
+                    <span>Comma delimited list of flows to include (use * for all):</span>
+                </label>
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-incFlows">Flows</label>
+                <input type="text" id="node-input-incFlows" placeholder="">
+                
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100 reg-lbl">
+                <label class="full-lbl">
+                    <span>Comma delimited list of subflows to include (use * for all):</span>
+                </label>
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-incSubflows">Subflows</label>
+                <input type="text" id="node-input-incSubflows" placeholder="">
+                
+            </div><!--col-->
+        </div><!--form-row-->
+    </div><!--node-props-->
+</script>
+
+<script type="text/html" data-help-name="flow2src">
+    
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('flow2src', {
+        category: 'common',
+        color: '#B0DDB0',
+        defaults: {
+            name: {value:""},
+                        incFlows: {value:"*"},
+            incSubflows: {value:"*"}
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "font-awesome/fa-folder-open",
+        label: function() {
+            return this.name || "flow2src";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            
+// Allow dynamic re-size after init. appearance 
+setTimeout(function () {
+    $('#node-props').css('width', '100%');
+}, 30);
+        },
+        oneditresize: function() {
+            
+        
+        },
+        oneditsave: function() {
+            
+
+        },
+        oneditcancel: function() {
+            
+
+        }
+    });
+    
+
+</script>
