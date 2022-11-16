@@ -1,5 +1,5 @@
 {
-    "name": "node-red-contrib-flow2src",
+    "name": "node-red-flow2src",
     "version": "0.0.1",
     "description": "A node that merges msg objects until all defined properties are present / conditions met before passing the combined msg along.",
     "author": "Stephen J. Carnam <steveorevo@gmail.com>",
@@ -7,7 +7,7 @@
     "keywords": ["src","source","code","node-red","version-control","git","svn","diff"],
     "repository": {
       "type": "git",
-      "url": "https://github.com/steveorevo/node-red-contrib-flow2src.git"
+      "url": "https://github.com/steveorevo/node-red-flow2src.git"
     },
     "dependencies": {
     },
