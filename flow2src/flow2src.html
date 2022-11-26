@@ -81,12 +81,34 @@
 
 </style>
 <script type="text/html" data-template-name="flow2src">
-        <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
+    
     <div id="node-props" style="width: 460px;">
                 <div class="form-row">
+            <div class="col-100 reg-lbl">
+                <label class="full-lbl">
+                    <span>Flow-to-Src will write the flow source properties to the src folder. Use Src-to-Flow to integrate changes back into the flow (the web browser will refresh).</span>
+                </label>
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row" style="margin-right:10px;">
+            <div class="col col-25 reg-lbl">
+                <label class="full-lbl">
+                    <i class="fa fa-bolt"></i> <span>Action</span>
+                </label>
+            </div><!--col-->
+            <div class="col col-25">
+                <button id="btn_flow2src" type="button" class="red-ui-button btn-regular"><i class="fa fa-download"></i> Flow-to-Src</button>
+            </div>
+            <div class="col col-25">
+                <button id="btn_src2flow" type="button" class="red-ui-button btn-regular"><i class="fa fa-upload"></i> Src-to-Flow</button>
+            </div>
+            <div style="margin-right:-15px;" class="col col-25 reg-lbl">
+                <label class="full-lbl">
+                    <span></span>
+                </label>
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
             <div class="col-100 reg-lbl">
                 <label class="full-lbl">
                     <span>Comma delimited list of flows to include (use * for all):</span>
@@ -114,6 +136,31 @@
                 
             </div><!--col-->
         </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100 reg-lbl">
+                <label class="full-lbl">
+                    <span>The output folder relative to the flow file:</span>
+                </label>
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-srcFolder">Output Folder</label>
+                <input type="text" id="node-input-srcFolder" placeholder="src">
+                
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col col-25 reg-lbl">
+                <label class="full-lbl">
+                    <span></span>
+                </label>
+            </div><!--col-->
+            <div style="margin-right:-5px;" class="col col-75 reg-lbl">
+                <label for="node-input-chkAutoFlow2Src" style="width:18px;">
+                <input type="checkbox" id="node-input-chkAutoFlow2Src" name="node-input-chkAutoFlow2Src" style="margin-top:-3px;" >Automatically Flow-to-Src on Deploys</label>
+            </div><!--col-->
+        </div><!--form-row-->
     </div><!--node-props-->
 </script>
 
@@ -128,9 +175,11 @@
         defaults: {
             name: {value:""},
                         incFlows: {value:"*"},
-            incSubflows: {value:"*"}
+            incSubflows: {value:"*"},
+            srcFolder: {value:"src"},
+            chkAutoFlow2Src: {value:false}
         },
-        inputs: 1,
+        inputs: 0,
         outputs: 0,
         icon: "font-awesome/fa-folder-open",
         label: function() {
@@ -141,10 +190,35 @@
         },
         oneditprepare: function() {
             
-// Allow dynamic re-size after init. appearance 
-setTimeout(function () {
-    $('#node-props').css('width', '100%');
-}, 30);
+            // Allow dynamic re-size after init. appearance 
+            setTimeout(function () {
+                $('#node-props').css('width', '100%');
+            }, 30);
+            var node = this;
+            $('#btn_flow2src').click(function(){
+                doAjax({"action":'flow2src', "srcFolder": node.srcFolder}, node.id, function(res){
+                    $('#node-dialog-ok').click();
+                    let notice = RED.notify('Flow source properties written to "./' + node.srcFolder + '" folder.', {
+                        type: "success",
+                        timeout: 3000
+                    });
+                });
+            });
+            $('#btn_src2flow').click(function(){
+                doAjax({"action":'src2flow', "srcFolder": node.srcFolder}, node.id, function(res){
+                    let notice = RED.notify('Source reloaded into flow file. Please restart the Node-RED server.', {
+                        type: "success",
+                        fixed: true,
+                        buttons: [{
+                            text: "OK",
+                            click: function(e) {
+                                $('#node-dialog-ok').click();
+                                notice.close();
+                            }
+                        }]
+                    });
+                });
+            });
         },
         oneditresize: function() {
             
@@ -161,4 +235,25 @@ setTimeout(function () {
     });
     
 
+    function doAjax(d, id, cb) {
+        console.log(id);
+        $.ajax({
+            url: "flow2src/" + id,
+            type: "POST",
+            data: JSON.stringify(d),
+            contentType: "application/json; charset=utf-8",
+            complete: cb,
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status == 404) {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                } else if (jqXHR.status == 500) {
+                    RED.notify(node._("common.notification.error", { message: node._("flow2src.errors.failed") }), "error");
+                } else if (jqXHR.status == 0) {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                } else {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                }
+            }
+        });
+    }
 </script>

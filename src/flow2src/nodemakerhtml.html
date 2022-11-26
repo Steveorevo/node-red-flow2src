@@ -1,0 +1,92 @@
+<style>
+    {{{customcss}}}
+</style>
+<script type="text/html" data-template-name="{{node_name}}">
+    {{{inc_node_name}}}
+    <div id="node-props" style="width: {{row_width}}px;">
+        {{{edit_dialog}}}
+    </div><!--node-props-->
+</script>
+
+<script type="text/html" data-help-name="{{node_name}}">
+    {{{helpdetails}}}
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('{{node_name}}', {
+        category: '{{node_category}}',
+        color: '{{node_color}}',
+        defaults: {
+            name: {value:""},
+            {{{defaults}}}
+        },
+        inputs: {{numinputs}},
+        outputs: {{numoutputs}},
+        icon: "font-awesome/fa-{{{node_icon}}}",
+        label: function() {
+            return this.name || "{{node_name}}";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            {{{oneditprepare}}}
+            var node = this;
+            $('#btn_flow2src').click(function(){
+                doAjax({"action":'flow2src', "srcFolder": node.srcFolder}, node.id, function(res){
+                    $('#node-dialog-ok').click();
+                    let notice = RED.notify('Flow source properties written to "./' + node.srcFolder + '" folder.', {
+                        type: "success",
+                        timeout: 3000
+                    });
+                });
+            });
+            $('#btn_src2flow').click(function(){
+                doAjax({"action":'src2flow', "srcFolder": node.srcFolder}, node.id, function(res){
+                    let notice = RED.notify('Source reloaded into flow file. Please restart the Node-RED server.', {
+                        type: "success",
+                        fixed: true,
+                        buttons: [{
+                            text: "OK",
+                            click: function(e) {
+                                $('#node-dialog-ok').click();
+                                notice.close();
+                            }
+                        }]
+                    });
+                });
+            });
+        },
+        oneditresize: function() {
+            {{{oneditresize}}}        
+        },
+        oneditsave: function() {
+            {{{oneditsave}}}
+        },
+        oneditcancel: function() {
+            {{{oneditcancel}}}
+        }
+    });
+    {{{othercode}}}
+    function doAjax(d, id, cb) {
+        console.log(id);
+        $.ajax({
+            url: "flow2src/" + id,
+            type: "POST",
+            data: JSON.stringify(d),
+            contentType: "application/json; charset=utf-8",
+            complete: cb,
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status == 404) {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                } else if (jqXHR.status == 500) {
+                    RED.notify(node._("common.notification.error", { message: node._("flow2src.errors.failed") }), "error");
+                } else if (jqXHR.status == 0) {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                } else {
+                    RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                }
+            }
+        });
+    }
+</script>
