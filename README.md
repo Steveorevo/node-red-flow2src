@@ -25,7 +25,7 @@ Run the following command in your Node-RED user directory (typically ~/.node-red
 The flow2src node will appear in the palette under the common group.
 
 ### Building
-The emerge node was built using the same author's [Node-Maker](https://github.com/steveorevo/node-maker) project. Included in this repo is the flow2src.json file containing the flow needed to build flow2src. Simply import this flow into Node-RED and click the associated inject button. The current version of node-red-flow2src folder will appear in your Node-RED's node_modules folder. 
+The flow2src node was built using the same author's [Node-Maker](https://github.com/steveorevo/node-maker) project. Included in this repo is the flow2src.json file containing the flow needed to build flow2src. Simply import this flow into Node-RED and click the associated inject button. The current version of node-red-flow2src folder will appear in your Node-RED's node_modules folder. 
 
 #### Support the creator
 You can help Steveorevo's open source development endeavors by donating any amount. Your donation, no matter how large or small helps pay for his time and resources to create MIT and GPL licensed projects that you and the world can benefit from. Click the link below to donate today :)
