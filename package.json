@@ -1,10 +1,10 @@
 {
     "name": "node-red-flow2src",
     "version": "0.0.1",
-    "description": "A node that merges msg objects until all defined properties are present / conditions met before passing the combined msg along.",
+    "description": "This node will write template and function node source code properties to a src sub-folder adjacent to the project's flows file; allowing for easy editing in external editors.",
     "author": "Stephen J. Carnam <steveorevo@gmail.com>",
     "license": "MIT",
-    "keywords": ["src","source","code","node-red","version-control","git","svn","diff"],
+    "keywords": ["node-red", "src","source","code","ide", "visual-studio-code", "version-control", "git", "svn", "diff"],
     "repository": {
       "type": "git",
       "url": "https://github.com/steveorevo/node-red-flow2src.git"
