@@ -1,24 +1,33 @@
 {
     "name": "@steveorevo/node-red-flow2src",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "This node will write template and function node source code properties to a src sub-folder adjacent to the project's flows file; allowing for easy editing in external editors.",
     "author": "Stephen J. Carnam <steveorevo@gmail.com>",
     "license": "MIT",
-    "keywords": ["node-red", "src", "source", "code", "ide", "visual-studio-code", "version-control", "git", "svn", "diff"],
+    "keywords": [
+        "node-red",
+        "src",
+        "source",
+        "code",
+        "ide",
+        "visual-studio-code",
+        "version-control",
+        "git",
+        "svn",
+        "diff"
+    ],
     "repository": {
-      "type": "git",
-      "url": "https://github.com/steveorevo/node-red-flow2src.git"
+        "type": "git",
+        "url": "https://github.com/steveorevo/node-red-flow2src.git"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "node-red": {
-      "version": "3.0.0",
-      "nodes": {
-        "flow2src": "flow2src/flow2src.js"
-      }
+        "version": "3.0.0",
+        "nodes": {
+            "flow2src": "flow2src/flow2src.js"
+        }
     },
     "engines": {
-      "node": ">=14.0.0"
+        "node": ">=14.0.0"
     }
-  }
-  
+}
