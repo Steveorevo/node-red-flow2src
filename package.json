@@ -1,6 +1,6 @@
 {
     "name": "@steveorevo/node-red-flow2src",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "This node will write template and function node source code properties to a src sub-folder adjacent to the project's flows file; allowing for easy editing in external editors.",
     "author": "Stephen J. Carnam <steveorevo@gmail.com>",
     "license": "MIT",
