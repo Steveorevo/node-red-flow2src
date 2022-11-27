@@ -22,10 +22,10 @@
     },
     "dependencies": {},
     "node-red": {
-        "version": ">=3.0.0",
         "nodes": {
             "flow2src": "flow2src/flow2src.js"
-        }
+        },
+        "version": ">=3.0.0"
     },
     "engines": {
         "node": ">=14.0.0"
