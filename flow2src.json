@@ -1,11 +1,489 @@
 [
     {
-        "id": "230ae449a55a426f",
-        "type": "tab",
-        "label": "flow2src",
-        "disabled": false,
+        "id": "da6577bfc4038dbb",
+        "type": "subflow",
+        "name": "checkbox",
         "info": "",
-        "env": []
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "b08129ad78aa131f"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 320,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "d46ba26faedba5a9",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "field_columns",
+                "type": "str",
+                "value": "col-100",
+                "ui": {
+                    "label": {
+                        "en-US": "Layout"
+                    },
+                    "type": "select",
+                    "opts": {
+                        "opts": [
+                            {
+                                "l": {
+                                    "en-US": "full row"
+                                },
+                                "v": "col-100"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "3/4 row"
+                                },
+                                "v": "col col-75"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "2/3 row"
+                                },
+                                "v": "col col-66"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/2 row"
+                                },
+                                "v": "col col-50"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/3 row"
+                                },
+                                "v": "col col-33"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/4 row"
+                                },
+                                "v": "col col-25"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_name",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Field Name"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_label",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Label"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_default",
+                "type": "str",
+                "value": "checked",
+                "ui": {
+                    "label": {
+                        "en-US": "Default"
+                    },
+                    "type": "select",
+                    "opts": {
+                        "opts": [
+                            {
+                                "l": {
+                                    "en-US": "checked"
+                                },
+                                "v": "checked"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "unchecked"
+                                },
+                                "v": "unchecked"
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99",
+        "icon": "font-awesome/fa-check-square"
+    },
+    {
+        "id": "b08129ad78aa131f",
+        "type": "function",
+        "z": "da6577bfc4038dbb",
+        "name": "function 8",
+        "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nif (env.get('field_default') == 'checked') {\n    msg.checked = 'checked';\n    msg.field_default = true;\n}else{\n    msg.checked = '';\n    msg.field_default = false;\n}\nmsg.field_columns = env.get('field_columns');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 40,
+        "wires": [
+            [
+                "005ee05cba1991fe"
+            ]
+        ]
+    },
+    {
+        "id": "005ee05cba1991fe",
+        "type": "template",
+        "z": "da6577bfc4038dbb",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label for=\"node-input-{{field_name}}\" style=\"width:18px;\">\n    <input type=\"checkbox\" id=\"node-input-{{field_name}}\" name=\"node-input-{{field_name}}\" style=\"margin-top:-3px;\" {{checked}}>{{{field_label}}}</label>\n</div><!--col-->",
+        "output": "str",
+        "x": 180,
+        "y": 100,
+        "wires": [
+            [
+                "d46ba26faedba5a9"
+            ]
+        ]
+    },
+    {
+        "id": "d46ba26faedba5a9",
+        "type": "function",
+        "z": "da6577bfc4038dbb",
+        "name": "function 9",
+        "func": "msg.edit_dialog.push(msg.payload);\nif (msg.field_default == 'checked') {\n    msg.field_default = true;\n}else{\n    msg.field_default = false;\n}\nmsg.defaults.push(msg.field_name + ': {value:' + msg.field_default.toString() + '}');\nif (msg.hasOwnProperty('rgroup_name')) {\n    msg.rgroup_details.push({\n        field_name: msg.field_name,\n        field_default_type: '',\n        field_types: ''\n    });\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9771d13dd19bf60f",
+        "type": "subflow",
+        "name": "use templts.",
+        "info": "If you use any of the code templates, be sure to place this node before it.",
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "ebd81684ada1c31c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 420,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "6bb34952a24fe530",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#F3B567",
+        "icon": "font-awesome/fa-file-code-o"
+    },
+    {
+        "id": "ebd81684ada1c31c",
+        "type": "template",
+        "z": "9771d13dd19bf60f",
+        "name": "re-size fix",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "            // Allow dynamic re-size after init. appearance \n            setTimeout(function () {\n                $('#node-props').css('width', '100%');\n            }, 30);",
+        "output": "str",
+        "x": 180,
+        "y": 40,
+        "wires": [
+            [
+                "6bb34952a24fe530"
+            ]
+        ]
+    },
+    {
+        "id": "6bb34952a24fe530",
+        "type": "function",
+        "z": "9771d13dd19bf60f",
+        "name": "compose defaults, othercode",
+        "func": "msg._oneditprepare.push(msg.payload);\n\nString.prototype.delRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n        }\n    }\n    return this;\n};\nString.prototype.delLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nvar indent = \" \".repeat(4);\nvar tabIndent = \"\";\nvar edit_dialog = \" \".repeat(8) + '<div class=\"form-row\">' + \"\\n\";\nvar cTotal = 0;\nvar nItems = 0;\nvar initTab = false;\nvar firstTabName = '';\nvar bInRGroup = false;    \nmsg.edit_dialog.forEach(function(item, index) {\n    if (item.indexOf('\"type\":\"tab_definition\"') == -1 && item.indexOf('form-row rgroup') == -1) {\n        item = item.replace(/^/gm, tabIndent);\n        item = item.replace(/^/gm, tabIndent);\n        if (bInRGroup) {\n            item = item.replace(/^/gm, \" \".repeat(4));\n        }\n    }\n    if (item.indexOf('<div class=\"form-row rgroup\"') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        item += \" \".repeat(4) + '<div class=\"form-row\">' + \"\\n\";\n        item = item.replace(/^/gm, \" \".repeat(8) + tabIndent).trimEnd() + \"\\n\";\n        bInRGroup = true;\n        edit_dialog += item;\n        return;\n    }\n    if (item.indexOf('<!--form-row rgroup-->') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        edit_dialog += \" \".repeat(8) + tabIndent + \"</div><!--form-row rgroup-...-template-->\\n\";\n        if (index < msg.edit_dialog.length - 1) {\n            edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n        }\n        bInRGroup = false;\n        return;\n    }\n    if (item.indexOf('\"type\":\"tab_definition\"') > -1) {\n        let tab = JSON.parse(item);\n        if (initTab == false) {\n            \n            // Inject the tab row\n            let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n            edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n            edit_dialog += '<div class=\"form-row func-tabs-row\">' + r;\n            edit_dialog += indent + indent + indent + '<ul style=\"min-width: 600px; margin-bottom: 20px;\" id=\"func-tabs\"></ul>' + \"\\n\";\n            edit_dialog += indent + indent + \"</div><!--func-tabs-row-->\\n\";\n            edit_dialog += indent + indent + '<div id=\"func-tabs-content\" style=\"min-height: calc(100% - 95px);\">' + \"\\n\";\n\n            // Start first tab\n            edit_dialog += indent + indent + indent + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += indent + indent + indent + indent + '<div class=\"form-row\">' + \"\\n\";\n            tabIndent = \" \".repeat(8);\n\n            // Init tab system\n            let code = \"// Prepare tab system\\n\";\n            code += \"var tabs = RED.tabs.create({\\n\";\n            code += \"    id: 'func-tabs',\\n\";\n            code += \"    onchange: function(tab) {\\n\";\n            code += \"        $('#func-tabs-content').children().hide();\\n\";\n            code += \"        $('#' + tab.id).show();\\n\";\n            code += \"    }\\n\";\n            code += \"});\\n\\n\";\n\n            // Add first tab code\n            code += \"// Add first tab, \" + tab.name + \"\\n\";\n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            firstTabName = tab.name;\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n            initTab = true;\n        }else{\n\n            // Add subsequent tabs \n            let r = edit_dialog.getRightMost('    <div class=\"form-row\"');\n            edit_dialog = edit_dialog.delRightMost('    <div class=\"form-row\"');\n            edit_dialog += \"</div><!--func-tab-tab#-->\\n\"; // close out last tab\n            edit_dialog += \" \".repeat(12) + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += \" \".repeat(16) + '<div class=\"form-row\"' + r;\n\n            // Add additional tab code\n            let code = \"// Add tab, \" + tab.name + \"\\n\";            \n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n        }        \n    }else{\n        if (tabIndent == '') {\n            item = item.replace(/^/gm, indent + indent + indent);\n        }else{\n            item = item.replace(/^/gm, indent);\n        }\n        let c = item.delLeftMost('col-').getLeftMost('\"').getLeftMost(' ');\n        cTotal += Number(c);\n        if (cTotal >= 83) {\n            let m = 5 * nItems;\n            if (m > 0) {\n                item = item.replace(\n                    'class=\"col ',\n                    'style=\"margin-right:-' + m.toString() + 'px;\" class=\"col '\n                );\n            }\n            if (nItems == 3) {\n                let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n                edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n                edit_dialog += '<div class=\"form-row\" style=\"margin-right:10px;\">' + r;\n            }\n            edit_dialog += item + \"\\n\";\n            if (index < msg.edit_dialog.length - 1) {\n                if (bInRGroup) {\n                    edit_dialog += \" \".repeat(4);\n                }\n                edit_dialog += indent + indent + tabIndent + \"</div><!--form-row-->\\n\";\n                edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n                cTotal = 0;\n                nItems = 0;\n            }\n        } else {\n            edit_dialog += item + \"\\n\";\n            nItems++;\n        }\n    }\n});\nif (initTab) { \n    edit_dialog += \" \".repeat(16) + \"</div><!--form-row-->\\n\";\n    edit_dialog += \" \".repeat(12) + \"</div><!--func-tab-tab#-->\\n\";\n    edit_dialog += \" \".repeat(8) + \"</div><!--func-tabs-content-->\";\n\n    // Activate the first tab if present\n    let code = \" \".repeat(12) + 'tabs.activateTab(\"func-tab-' + firstTabName + '\");' + \"\\n\";\n    msg._oneditprepare.push(code);\n}else{\n    edit_dialog += \" \".repeat(8) + \"</div><!--form-row-->\";\n}\nmsg.edit_dialog = edit_dialog;\n\nlet defaults = '';\nmsg.defaults.forEach(function(item, index) {\n    defaults += \"            \" + item;\n    if (index < msg.defaults.length -1) {\n        defaults += \",\\n\";\n    }else{\n        defaults += \"\\n\";\n    }\n});\nmsg.defaults = defaults;\nmsg.oneditprepare = \"\\n\" + msg._oneditprepare.join(\"\\n\");\nmsg.oneditresize = \"\\n\" + msg._oneditresize.join(\"\\n\");\nmsg.oneditsave = \"\\n\" + msg._oneditsave.join(\"\\n\");\nmsg.oneditcancel = \"\\n\" + msg._oneditcancel.join(\"\\n\");\nmsg.defaults = msg.defaults.slice(0, -1);\nvar othercode = \"\";\nfor (var key in msg._othercode) {\n    var value = msg._othercode[key];\n    othercode += value;\n}\nmsg.othercode = \"\\n\" + othercode;\nmsg.runtimecode = \"\\n\" + msg.runtimecode.replace(/^/gm, \"    \".repeat(4));\nmsg.useTemplates = true;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c70964ba34544694",
+        "type": "subflow",
+        "name": "button",
+        "info": "",
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "5fd3369e032c68b0"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 380,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "41f4b3c1077a06f2",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "field_columns",
+                "type": "str",
+                "value": "col-100",
+                "ui": {
+                    "label": {
+                        "en-US": "Layout"
+                    },
+                    "type": "select",
+                    "opts": {
+                        "opts": [
+                            {
+                                "l": {
+                                    "en-US": "full-row"
+                                },
+                                "v": "col-100"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "3/4 row"
+                                },
+                                "v": "col col-75"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "2/3 row"
+                                },
+                                "v": "col col-66"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/2 row"
+                                },
+                                "v": "col col-50"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/3 row"
+                                },
+                                "v": "col col-33"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "1/4 row"
+                                },
+                                "v": "col col-25"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_name",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Button Name"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_label",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Caption"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "field_icon",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Icon"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "button_size",
+                "type": "str",
+                "value": "red-ui-button",
+                "ui": {
+                    "label": {
+                        "en-US": "Size"
+                    },
+                    "type": "select",
+                    "opts": {
+                        "opts": [
+                            {
+                                "l": {
+                                    "en-US": "Regular"
+                                },
+                                "v": "red-ui-button btn-regular"
+                            },
+                            {
+                                "l": {
+                                    "en-US": "Small"
+                                },
+                                "v": "red-ui-button red-ui-button-small"
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99",
+        "icon": "font-awesome/fa-square-o"
+    },
+    {
+        "id": "5fd3369e032c68b0",
+        "type": "function",
+        "z": "c70964ba34544694",
+        "name": "function 21",
+        "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nlet icon = env.get('field_icon');\nif (icon != '') {\n    msg.field_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n} else {\n    msg.field_icon = '';\n}\nmsg.field_label_elm = msg.field_icon + msg.field_label;\nmsg.button_size = env.get('button_size');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 40,
+        "wires": [
+            [
+                "09a5b20f490d7474"
+            ]
+        ]
+    },
+    {
+        "id": "09a5b20f490d7474",
+        "type": "template",
+        "z": "c70964ba34544694",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<div class=\"{{field_columns}}\">\n    <button id=\"btn_{{field_name}}\" type=\"button\" class=\"{{{button_size}}}\">{{{field_label_elm}}}</button>\n</div>",
+        "output": "str",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "41f4b3c1077a06f2"
+            ]
+        ]
+    },
+    {
+        "id": "41f4b3c1077a06f2",
+        "type": "function",
+        "z": "c70964ba34544694",
+        "name": "function 22",
+        "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 160,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "d0a39641213352a7",
@@ -124,6 +602,61 @@
         "meta": {},
         "color": "#DDAA99",
         "icon": "font-awesome/fa-font"
+    },
+    {
+        "id": "fe135416b9ef2efa",
+        "type": "template",
+        "z": "d0a39641213352a7",
+        "name": "edit_dialog",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label class=\"full-lbl\">\n        {{{label_icon}}}<span>{{{label_caption}}}</span>\n    </label>\n</div><!--col-->",
+        "output": "str",
+        "x": 190,
+        "y": 100,
+        "wires": [
+            [
+                "84054fdfc2c499b0"
+            ]
+        ]
+    },
+    {
+        "id": "b15245fe8570aaf7",
+        "type": "function",
+        "z": "d0a39641213352a7",
+        "name": "function 6",
+        "func": "msg.label_caption = env.get('label_caption');\nlet icon = env.get('label_icon');\nif (icon != '') {\n    msg.label_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n}else{\n    msg.label_icon = '';\n} \nmsg.field_columns = env.get('field_columns');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 40,
+        "wires": [
+            [
+                "fe135416b9ef2efa"
+            ]
+        ]
+    },
+    {
+        "id": "84054fdfc2c499b0",
+        "type": "function",
+        "z": "d0a39641213352a7",
+        "name": "function 7",
+        "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 160,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "7062e6f741533eb2",
@@ -441,712 +974,6 @@
         "icon": "font-awesome/fa-i-cursor"
     },
     {
-        "id": "65d5e45697fed99a",
-        "type": "subflow",
-        "name": "finish node",
-        "info": "A finish node marks the end of a node definition. The finish node will finalize writing all\nthe files needed to create your node; the package.json, html, javascript, and ecompassing\nproject folder within your node-red instance's node_module folder. It will also restart the\nnode-red instance if it was started using the command:\n\n``\nkill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid\n``\n\nThis makes ongoing development easy as you simply need to refresh the browser to see node changes\nafter you have invoked the flow.",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "37f124c38d4954c7"
-                    }
-                ]
-            }
-        ],
-        "out": [],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
-        "id": "85e13a6e48f6a1c3",
-        "type": "subflow",
-        "name": "start node",
-        "info": "The start node marks the beginning of a new node defintion. To create a node,\nconnect an inject node to the start node and connect the start node to a \nfinish node. You may wire various other nodes between the start and finish\nnodes to define your node's user interface.\n\nThe following properties can be configured in the properties panel:\n\n* Node Name - choose a JavaScript variable safe name for your node.\n* Version - A valid version string in the form of major, minor, patch i.e. 1.0.0\n* Description - a short description of your node.\n* Category - The palette group the node will appear under; existing i.e. common or you can define your own.\n* Icon - An existing fontawesome name, sans the 'font-awesome/fa-' prefix; i.e. bathtub\n* Color - The color of the node as it appears in the palette and editor. I.e. #E2D96E\n* Keywords - Used in the package.json file for reference and indexing by npm.\n* Author Name - The name of the node author. Used in package.json\n* Author Email - The email of the node author. Used in package.json\n* GitHub Handle - The handle used for the GitHub repo URL, I.e. john will appears as https://github.com/john/node-name\n* Max Row Width - The initial width of the property dialog (in pixels) when it is first opened.\n* Inputs - Whether the node accepts an input or not; 1 or 0 our the only acceptable values.\n* Outputs - The number of outputs the node will have.\n* Include node name... - Determines if a default name field will appear at the top of the property window; appears above any tab or other input fields.\n",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "729874432b3551f1"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 740,
-                "y": 200,
-                "wires": [
-                    {
-                        "id": "1d506b65823c19c3",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [
-            {
-                "name": "node_name",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Node Name"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "node_version",
-                "type": "str",
-                "value": "0.0.1",
-                "ui": {
-                    "label": {
-                        "en-US": "Version"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "node_description",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Description"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "node_category",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Category"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "node_icon",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Icon"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "node_color",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Color"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "keywords",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Keywords"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "author_name",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Author Name"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "author_email",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Author Email"
-                    }
-                }
-            },
-            {
-                "name": "github_handle",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "GitHub Handle"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "row_width",
-                "type": "num",
-                "value": "460",
-                "ui": {
-                    "label": {
-                        "en-US": "Max Row Width"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "num"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "numinputs",
-                "type": "num",
-                "value": "1",
-                "ui": {
-                    "label": {
-                        "en-US": "Inputs"
-                    },
-                    "type": "spinner",
-                    "opts": {
-                        "min": 0,
-                        "max": 1
-                    }
-                }
-            },
-            {
-                "name": "numoutputs",
-                "type": "num",
-                "value": "1",
-                "ui": {
-                    "label": {
-                        "en-US": "Outputs"
-                    },
-                    "type": "spinner"
-                }
-            },
-            {
-                "name": "inc_node_name",
-                "type": "bool",
-                "value": "true",
-                "ui": {
-                    "label": {
-                        "en-US": "Include node name field at the top"
-                    },
-                    "type": "checkbox"
-                }
-            }
-        ],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
-        "id": "c70964ba34544694",
-        "type": "subflow",
-        "name": "button",
-        "info": "",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "5fd3369e032c68b0"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 380,
-                "y": 80,
-                "wires": [
-                    {
-                        "id": "41f4b3c1077a06f2",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [
-            {
-                "name": "field_columns",
-                "type": "str",
-                "value": "col-100",
-                "ui": {
-                    "label": {
-                        "en-US": "Layout"
-                    },
-                    "type": "select",
-                    "opts": {
-                        "opts": [
-                            {
-                                "l": {
-                                    "en-US": "full-row"
-                                },
-                                "v": "col-100"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "3/4 row"
-                                },
-                                "v": "col col-75"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "2/3 row"
-                                },
-                                "v": "col col-66"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/2 row"
-                                },
-                                "v": "col col-50"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/3 row"
-                                },
-                                "v": "col col-33"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/4 row"
-                                },
-                                "v": "col col-25"
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_name",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Button Name"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_label",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Caption"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_icon",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Icon"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "button_size",
-                "type": "str",
-                "value": "red-ui-button",
-                "ui": {
-                    "label": {
-                        "en-US": "Size"
-                    },
-                    "type": "select",
-                    "opts": {
-                        "opts": [
-                            {
-                                "l": {
-                                    "en-US": "Regular"
-                                },
-                                "v": "red-ui-button btn-regular"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "Small"
-                                },
-                                "v": "red-ui-button red-ui-button-small"
-                            }
-                        ]
-                    }
-                }
-            }
-        ],
-        "meta": {},
-        "color": "#DDAA99",
-        "icon": "font-awesome/fa-square-o"
-    },
-    {
-        "id": "9771d13dd19bf60f",
-        "type": "subflow",
-        "name": "use templts.",
-        "info": "If you use any of the code templates, be sure to place this node before it.",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "ebd81684ada1c31c"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 420,
-                "y": 100,
-                "wires": [
-                    {
-                        "id": "6bb34952a24fe530",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [],
-        "meta": {},
-        "color": "#F3B567",
-        "icon": "font-awesome/fa-file-code-o"
-    },
-    {
-        "id": "da6577bfc4038dbb",
-        "type": "subflow",
-        "name": "checkbox",
-        "info": "",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "b08129ad78aa131f"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 320,
-                "y": 160,
-                "wires": [
-                    {
-                        "id": "d46ba26faedba5a9",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [
-            {
-                "name": "field_columns",
-                "type": "str",
-                "value": "col-100",
-                "ui": {
-                    "label": {
-                        "en-US": "Layout"
-                    },
-                    "type": "select",
-                    "opts": {
-                        "opts": [
-                            {
-                                "l": {
-                                    "en-US": "full row"
-                                },
-                                "v": "col-100"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "3/4 row"
-                                },
-                                "v": "col col-75"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "2/3 row"
-                                },
-                                "v": "col col-66"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/2 row"
-                                },
-                                "v": "col col-50"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/3 row"
-                                },
-                                "v": "col col-33"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "1/4 row"
-                                },
-                                "v": "col col-25"
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_name",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Field Name"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_label",
-                "type": "str",
-                "value": "",
-                "ui": {
-                    "label": {
-                        "en-US": "Label"
-                    },
-                    "type": "input",
-                    "opts": {
-                        "types": [
-                            "str"
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "field_default",
-                "type": "str",
-                "value": "checked",
-                "ui": {
-                    "label": {
-                        "en-US": "Default"
-                    },
-                    "type": "select",
-                    "opts": {
-                        "opts": [
-                            {
-                                "l": {
-                                    "en-US": "checked"
-                                },
-                                "v": "checked"
-                            },
-                            {
-                                "l": {
-                                    "en-US": "unchecked"
-                                },
-                                "v": "unchecked"
-                            }
-                        ]
-                    }
-                }
-            }
-        ],
-        "meta": {},
-        "color": "#DDAA99",
-        "icon": "font-awesome/fa-check-square"
-    },
-    {
-        "id": "11ee4d2cf1435263",
-        "type": "junction",
-        "z": "7062e6f741533eb2",
-        "x": 340,
-        "y": 40,
-        "wires": [
-            [
-                "3c2eac4c542cd18e"
-            ]
-        ]
-    },
-    {
-        "id": "1d0b5202023b245b",
-        "type": "junction",
-        "z": "65d5e45697fed99a",
-        "x": 500,
-        "y": 220,
-        "wires": [
-            [
-                "46fdba84593e4a18"
-            ]
-        ]
-    },
-    {
-        "id": "cb1013b93ba4d83e",
-        "type": "junction",
-        "z": "230ae449a55a426f",
-        "x": 200,
-        "y": 560,
-        "wires": [
-            [
-                "269a8be2dc96e712"
-            ]
-        ]
-    },
-    {
-        "id": "269a8be2dc96e712",
-        "type": "junction",
-        "z": "230ae449a55a426f",
-        "x": 280,
-        "y": 60,
-        "wires": [
-            [
-                "e5067a7a4c311090"
-            ]
-        ]
-    },
-    {
-        "id": "fe135416b9ef2efa",
-        "type": "template",
-        "z": "d0a39641213352a7",
-        "name": "edit_dialog",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label class=\"full-lbl\">\n        {{{label_icon}}}<span>{{{label_caption}}}</span>\n    </label>\n</div><!--col-->",
-        "output": "str",
-        "x": 190,
-        "y": 100,
-        "wires": [
-            [
-                "84054fdfc2c499b0"
-            ]
-        ]
-    },
-    {
-        "id": "b15245fe8570aaf7",
-        "type": "function",
-        "z": "d0a39641213352a7",
-        "name": "function 6",
-        "func": "msg.label_caption = env.get('label_caption');\nlet icon = env.get('label_icon');\nif (icon != '') {\n    msg.label_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n}else{\n    msg.label_icon = '';\n} \nmsg.field_columns = env.get('field_columns');\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 180,
-        "y": 40,
-        "wires": [
-            [
-                "fe135416b9ef2efa"
-            ]
-        ]
-    },
-    {
-        "id": "84054fdfc2c499b0",
-        "type": "function",
-        "z": "d0a39641213352a7",
-        "name": "function 7",
-        "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 180,
-        "y": 160,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "2f6d8f31aa468d9f",
         "type": "template",
         "z": "7062e6f741533eb2",
@@ -1284,6 +1111,40 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "11ee4d2cf1435263",
+        "type": "junction",
+        "z": "7062e6f741533eb2",
+        "x": 340,
+        "y": 40,
+        "wires": [
+            [
+                "3c2eac4c542cd18e"
+            ]
+        ]
+    },
+    {
+        "id": "65d5e45697fed99a",
+        "type": "subflow",
+        "name": "finish node",
+        "info": "A finish node marks the end of a node definition. The finish node will finalize writing all\nthe files needed to create your node; the package.json, html, javascript, and ecompassing\nproject folder within your node-red instance's node_module folder. It will also restart the\nnode-red instance if it was started using the command:\n\n``\nkill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid\n``\n\nThis makes ongoing development easy as you simply need to refresh the browser to see node changes\nafter you have invoked the flow.",
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "37f124c38d4954c7"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
     },
     {
         "id": "0eb2dcf71e3bf43f",
@@ -1555,6 +1416,259 @@
         ]
     },
     {
+        "id": "1d0b5202023b245b",
+        "type": "junction",
+        "z": "65d5e45697fed99a",
+        "x": 500,
+        "y": 220,
+        "wires": [
+            [
+                "46fdba84593e4a18"
+            ]
+        ]
+    },
+    {
+        "id": "85e13a6e48f6a1c3",
+        "type": "subflow",
+        "name": "start node",
+        "info": "The start node marks the beginning of a new node defintion. To create a node,\nconnect an inject node to the start node and connect the start node to a \nfinish node. You may wire various other nodes between the start and finish\nnodes to define your node's user interface.\n\nThe following properties can be configured in the properties panel:\n\n* Node Name - choose a JavaScript variable safe name for your node.\n* Version - A valid version string in the form of major, minor, patch i.e. 1.0.0\n* Description - a short description of your node.\n* Category - The palette group the node will appear under; existing i.e. common or you can define your own.\n* Icon - An existing fontawesome name, sans the 'font-awesome/fa-' prefix; i.e. bathtub\n* Color - The color of the node as it appears in the palette and editor. I.e. #E2D96E\n* Keywords - Used in the package.json file for reference and indexing by npm.\n* Author Name - The name of the node author. Used in package.json\n* Author Email - The email of the node author. Used in package.json\n* GitHub Handle - The handle used for the GitHub repo URL, I.e. john will appears as https://github.com/john/node-name\n* Max Row Width - The initial width of the property dialog (in pixels) when it is first opened.\n* Inputs - Whether the node accepts an input or not; 1 or 0 our the only acceptable values.\n* Outputs - The number of outputs the node will have.\n* Include node name... - Determines if a default name field will appear at the top of the property window; appears above any tab or other input fields.\n",
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "729874432b3551f1"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 740,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "1d506b65823c19c3",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "node_name",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Node Name"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_version",
+                "type": "str",
+                "value": "0.0.1",
+                "ui": {
+                    "label": {
+                        "en-US": "Version"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_description",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Description"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_category",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Category"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_icon",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Icon"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_color",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Color"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "keywords",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Keywords"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "author_name",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Author Name"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "author_email",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Author Email"
+                    }
+                }
+            },
+            {
+                "name": "github_handle",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "GitHub Handle"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "row_width",
+                "type": "num",
+                "value": "460",
+                "ui": {
+                    "label": {
+                        "en-US": "Max Row Width"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "numinputs",
+                "type": "num",
+                "value": "1",
+                "ui": {
+                    "label": {
+                        "en-US": "Inputs"
+                    },
+                    "type": "spinner",
+                    "opts": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            },
+            {
+                "name": "numoutputs",
+                "type": "num",
+                "value": "1",
+                "ui": {
+                    "label": {
+                        "en-US": "Outputs"
+                    },
+                    "type": "spinner"
+                }
+            },
+            {
+                "name": "inc_node_name",
+                "type": "bool",
+                "value": "true",
+                "ui": {
+                    "label": {
+                        "en-US": "Include node name field at the top"
+                    },
+                    "type": "checkbox"
+                }
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
         "id": "729874432b3551f1",
         "type": "function",
         "z": "85e13a6e48f6a1c3",
@@ -1739,152 +1853,6 @@
         ]
     },
     {
-        "id": "5fd3369e032c68b0",
-        "type": "function",
-        "z": "c70964ba34544694",
-        "name": "function 21",
-        "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nlet icon = env.get('field_icon');\nif (icon != '') {\n    msg.field_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n} else {\n    msg.field_icon = '';\n}\nmsg.field_label_elm = msg.field_icon + msg.field_label;\nmsg.button_size = env.get('button_size');\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 40,
-        "wires": [
-            [
-                "09a5b20f490d7474"
-            ]
-        ]
-    },
-    {
-        "id": "09a5b20f490d7474",
-        "type": "template",
-        "z": "c70964ba34544694",
-        "name": "",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "html",
-        "syntax": "mustache",
-        "template": "<div class=\"{{field_columns}}\">\n    <button id=\"btn_{{field_name}}\" type=\"button\" class=\"{{{button_size}}}\">{{{field_label_elm}}}</button>\n</div>",
-        "output": "str",
-        "x": 160,
-        "y": 100,
-        "wires": [
-            [
-                "41f4b3c1077a06f2"
-            ]
-        ]
-    },
-    {
-        "id": "41f4b3c1077a06f2",
-        "type": "function",
-        "z": "c70964ba34544694",
-        "name": "function 22",
-        "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 160,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "ebd81684ada1c31c",
-        "type": "template",
-        "z": "9771d13dd19bf60f",
-        "name": "re-size fix",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "javascript",
-        "syntax": "mustache",
-        "template": "            // Allow dynamic re-size after init. appearance \n            setTimeout(function () {\n                $('#node-props').css('width', '100%');\n            }, 30);",
-        "output": "str",
-        "x": 180,
-        "y": 40,
-        "wires": [
-            [
-                "6bb34952a24fe530"
-            ]
-        ]
-    },
-    {
-        "id": "6bb34952a24fe530",
-        "type": "function",
-        "z": "9771d13dd19bf60f",
-        "name": "compose defaults, othercode",
-        "func": "msg._oneditprepare.push(msg.payload);\n\nString.prototype.delRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n        }\n    }\n    return this;\n};\nString.prototype.delLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nvar indent = \" \".repeat(4);\nvar tabIndent = \"\";\nvar edit_dialog = \" \".repeat(8) + '<div class=\"form-row\">' + \"\\n\";\nvar cTotal = 0;\nvar nItems = 0;\nvar initTab = false;\nvar firstTabName = '';\nvar bInRGroup = false;    \nmsg.edit_dialog.forEach(function(item, index) {\n    if (item.indexOf('\"type\":\"tab_definition\"') == -1 && item.indexOf('form-row rgroup') == -1) {\n        item = item.replace(/^/gm, tabIndent);\n        item = item.replace(/^/gm, tabIndent);\n        if (bInRGroup) {\n            item = item.replace(/^/gm, \" \".repeat(4));\n        }\n    }\n    if (item.indexOf('<div class=\"form-row rgroup\"') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        item += \" \".repeat(4) + '<div class=\"form-row\">' + \"\\n\";\n        item = item.replace(/^/gm, \" \".repeat(8) + tabIndent).trimEnd() + \"\\n\";\n        bInRGroup = true;\n        edit_dialog += item;\n        return;\n    }\n    if (item.indexOf('<!--form-row rgroup-->') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        edit_dialog += \" \".repeat(8) + tabIndent + \"</div><!--form-row rgroup-...-template-->\\n\";\n        if (index < msg.edit_dialog.length - 1) {\n            edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n        }\n        bInRGroup = false;\n        return;\n    }\n    if (item.indexOf('\"type\":\"tab_definition\"') > -1) {\n        let tab = JSON.parse(item);\n        if (initTab == false) {\n            \n            // Inject the tab row\n            let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n            edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n            edit_dialog += '<div class=\"form-row func-tabs-row\">' + r;\n            edit_dialog += indent + indent + indent + '<ul style=\"min-width: 600px; margin-bottom: 20px;\" id=\"func-tabs\"></ul>' + \"\\n\";\n            edit_dialog += indent + indent + \"</div><!--func-tabs-row-->\\n\";\n            edit_dialog += indent + indent + '<div id=\"func-tabs-content\" style=\"min-height: calc(100% - 95px);\">' + \"\\n\";\n\n            // Start first tab\n            edit_dialog += indent + indent + indent + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += indent + indent + indent + indent + '<div class=\"form-row\">' + \"\\n\";\n            tabIndent = \" \".repeat(8);\n\n            // Init tab system\n            let code = \"// Prepare tab system\\n\";\n            code += \"var tabs = RED.tabs.create({\\n\";\n            code += \"    id: 'func-tabs',\\n\";\n            code += \"    onchange: function(tab) {\\n\";\n            code += \"        $('#func-tabs-content').children().hide();\\n\";\n            code += \"        $('#' + tab.id).show();\\n\";\n            code += \"    }\\n\";\n            code += \"});\\n\\n\";\n\n            // Add first tab code\n            code += \"// Add first tab, \" + tab.name + \"\\n\";\n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            firstTabName = tab.name;\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n            initTab = true;\n        }else{\n\n            // Add subsequent tabs \n            let r = edit_dialog.getRightMost('    <div class=\"form-row\"');\n            edit_dialog = edit_dialog.delRightMost('    <div class=\"form-row\"');\n            edit_dialog += \"</div><!--func-tab-tab#-->\\n\"; // close out last tab\n            edit_dialog += \" \".repeat(12) + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += \" \".repeat(16) + '<div class=\"form-row\"' + r;\n\n            // Add additional tab code\n            let code = \"// Add tab, \" + tab.name + \"\\n\";            \n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n        }        \n    }else{\n        if (tabIndent == '') {\n            item = item.replace(/^/gm, indent + indent + indent);\n        }else{\n            item = item.replace(/^/gm, indent);\n        }\n        let c = item.delLeftMost('col-').getLeftMost('\"').getLeftMost(' ');\n        cTotal += Number(c);\n        if (cTotal >= 83) {\n            let m = 5 * nItems;\n            if (m > 0) {\n                item = item.replace(\n                    'class=\"col ',\n                    'style=\"margin-right:-' + m.toString() + 'px;\" class=\"col '\n                );\n            }\n            if (nItems == 3) {\n                let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n                edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n                edit_dialog += '<div class=\"form-row\" style=\"margin-right:10px;\">' + r;\n            }\n            edit_dialog += item + \"\\n\";\n            if (index < msg.edit_dialog.length - 1) {\n                if (bInRGroup) {\n                    edit_dialog += \" \".repeat(4);\n                }\n                edit_dialog += indent + indent + tabIndent + \"</div><!--form-row-->\\n\";\n                edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n                cTotal = 0;\n                nItems = 0;\n            }\n        } else {\n            edit_dialog += item + \"\\n\";\n            nItems++;\n        }\n    }\n});\nif (initTab) { \n    edit_dialog += \" \".repeat(16) + \"</div><!--form-row-->\\n\";\n    edit_dialog += \" \".repeat(12) + \"</div><!--func-tab-tab#-->\\n\";\n    edit_dialog += \" \".repeat(8) + \"</div><!--func-tabs-content-->\";\n\n    // Activate the first tab if present\n    let code = \" \".repeat(12) + 'tabs.activateTab(\"func-tab-' + firstTabName + '\");' + \"\\n\";\n    msg._oneditprepare.push(code);\n}else{\n    edit_dialog += \" \".repeat(8) + \"</div><!--form-row-->\";\n}\nmsg.edit_dialog = edit_dialog;\n\nlet defaults = '';\nmsg.defaults.forEach(function(item, index) {\n    defaults += \"            \" + item;\n    if (index < msg.defaults.length -1) {\n        defaults += \",\\n\";\n    }else{\n        defaults += \"\\n\";\n    }\n});\nmsg.defaults = defaults;\nmsg.oneditprepare = \"\\n\" + msg._oneditprepare.join(\"\\n\");\nmsg.oneditresize = \"\\n\" + msg._oneditresize.join(\"\\n\");\nmsg.oneditsave = \"\\n\" + msg._oneditsave.join(\"\\n\");\nmsg.oneditcancel = \"\\n\" + msg._oneditcancel.join(\"\\n\");\nmsg.defaults = msg.defaults.slice(0, -1);\nvar othercode = \"\";\nfor (var key in msg._othercode) {\n    var value = msg._othercode[key];\n    othercode += value;\n}\nmsg.othercode = \"\\n\" + othercode;\nmsg.runtimecode = \"\\n\" + msg.runtimecode.replace(/^/gm, \"    \".repeat(4));\nmsg.useTemplates = true;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 240,
-        "y": 100,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "b08129ad78aa131f",
-        "type": "function",
-        "z": "da6577bfc4038dbb",
-        "name": "function 8",
-        "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nif (env.get('field_default') == 'checked') {\n    msg.checked = 'checked';\n    msg.field_default = true;\n}else{\n    msg.checked = '';\n    msg.field_default = false;\n}\nmsg.field_columns = env.get('field_columns');\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 180,
-        "y": 40,
-        "wires": [
-            [
-                "005ee05cba1991fe"
-            ]
-        ]
-    },
-    {
-        "id": "005ee05cba1991fe",
-        "type": "template",
-        "z": "da6577bfc4038dbb",
-        "name": "",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "html",
-        "syntax": "mustache",
-        "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label for=\"node-input-{{field_name}}\" style=\"width:18px;\">\n    <input type=\"checkbox\" id=\"node-input-{{field_name}}\" name=\"node-input-{{field_name}}\" style=\"margin-top:-3px;\" {{checked}}>{{{field_label}}}</label>\n</div><!--col-->",
-        "output": "str",
-        "x": 180,
-        "y": 100,
-        "wires": [
-            [
-                "d46ba26faedba5a9"
-            ]
-        ]
-    },
-    {
-        "id": "d46ba26faedba5a9",
-        "type": "function",
-        "z": "da6577bfc4038dbb",
-        "name": "function 9",
-        "func": "msg.edit_dialog.push(msg.payload);\nif (msg.field_default == 'checked') {\n    msg.field_default = true;\n}else{\n    msg.field_default = false;\n}\nmsg.defaults.push(msg.field_name + ': {value:' + msg.field_default.toString() + '}');\nif (msg.hasOwnProperty('rgroup_name')) {\n    msg.rgroup_details.push({\n        field_name: msg.field_name,\n        field_default_type: '',\n        field_types: ''\n    });\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 180,
-        "y": 160,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "6d15f18bdedc6bc8",
         "type": "subflow:85e13a6e48f6a1c3",
         "z": "230ae449a55a426f",
@@ -1896,8 +1864,13 @@
                 "type": "str"
             },
             {
+                "name": "node_version",
+                "value": "1.0.0",
+                "type": "str"
+            },
+            {
                 "name": "node_description",
-                "value": "This node will write template and function node source code properties to a src sub-folder adjacent to the project's flows file.",
+                "value": "This node will write template and function node source code properties to a src sub-folder adjacent to the project's flows file; allowing for easy editing in external editors.",
                 "type": "str"
             },
             {
@@ -1917,7 +1890,7 @@
             },
             {
                 "name": "keywords",
-                "value": "src, source, code, node-red, version-control, git, svn, diff",
+                "value": "node-red, src, source, code, visual-studio-code, version-control, git, svn, diff",
                 "type": "str"
             },
             {
@@ -2419,16 +2392,27 @@
         ]
     },
     {
-        "id": "94dbbb4e1d2f5d38",
-        "type": "flow2src",
+        "id": "cb1013b93ba4d83e",
+        "type": "junction",
         "z": "230ae449a55a426f",
-        "name": "",
-        "incFlows": "*",
-        "incSubflows": "*",
-        "srcFolder": "src",
-        "chkAutoFlow2Src": true,
-        "x": 580,
+        "x": 200,
+        "y": 560,
+        "wires": [
+            [
+                "269a8be2dc96e712"
+            ]
+        ]
+    },
+    {
+        "id": "269a8be2dc96e712",
+        "type": "junction",
+        "z": "230ae449a55a426f",
+        "x": 280,
         "y": 60,
-        "wires": []
+        "wires": [
+            [
+                "e5067a7a4c311090"
+            ]
+        ]
     }
 ]
