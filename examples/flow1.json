@@ -1,0 +1,91 @@
+[
+    {
+        "id": "6b5cb94dd5af2443",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "70331a489fbc47c3",
+        "type": "function",
+        "z": "6b5cb94dd5af2443",
+        "name": "function",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 100,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af280f619e81ccf2",
+        "type": "function",
+        "z": "6b5cb94dd5af2443",
+        "name": "function",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 100,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "65a263ad05a3202f",
+        "type": "template",
+        "z": "6b5cb94dd5af2443",
+        "name": "template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This is the payload: {{payload}} !",
+        "output": "str",
+        "x": 100,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "954d89d2e33436c9",
+        "type": "template",
+        "z": "6b5cb94dd5af2443",
+        "name": "template",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This is the payload: {{payload}} !",
+        "output": "str",
+        "x": 100,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "06a50d78a423d883",
+        "type": "flow2src",
+        "z": "6b5cb94dd5af2443",
+        "name": "",
+        "incFlows": "*",
+        "incSubflows": "*",
+        "srcFolder": "src",
+        "chkAutoFlow2Src": false,
+        "x": 100,
+        "y": 40,
+        "wires": []
+    }
+]
