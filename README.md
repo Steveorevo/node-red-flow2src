@@ -15,8 +15,6 @@ extensions (i.e. .js, .html, .json, .css, etc.) are written to the folders. The 
 
 After making edits to the files in your src folder; use the "Src-to-Flow" button to merge changes back into your flow file. 
 
-***Note:*** *you will need to restart the Node-RED server and refresh your browser to see changes take effect.*
-
 ### Options
 You can further customize which flows and subflows are exported and where they are exported using the following textbox options:
 
