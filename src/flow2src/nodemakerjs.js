@@ -118,7 +118,7 @@ module.exports = function(RED) {
                             theIDs.push(obj.id);
                         }
                         // Gather nodes and templates
-                        if (obj.type == 'template' || obj.type == 'function') {
+                        if (obj.type == 'template' || obj.type == 'function' || obj.type == 'wp function') {
                             theNodes.push(obj);
                         }
                     });
@@ -145,6 +145,9 @@ module.exports = function(RED) {
                         }
                         if (obj.type == 'function') {
                             ext = '.js';
+                        }
+                        if (obj.type == 'wp function') {
+                            ext = '.php';
                         }
                         let fname = obj.name.replace(/[^a-z0-9]/gi, '_');
                         if (fname == '') {
@@ -197,6 +200,13 @@ module.exports = function(RED) {
                                 property: 'finalize',
                                 file: onStopFile
                             });
+                        } else if (obj.type == 'wp function') {
+                            obj.srcFiles.push({
+                                id: obj.id,
+                                property: 'func',
+                                file: file
+                            });
+                            existingFiles.push(file);
                         }
                         srcNodes.push(obj);
                     });

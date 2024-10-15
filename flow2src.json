@@ -1,5 +1,297 @@
 [
     {
+        "id": "65d5e45697fed99a",
+        "type": "subflow",
+        "name": "finish node",
+        "info": "A finish node marks the end of a node definition. The finish node will finalize writing all\nthe files needed to create your node; the package.json, html, javascript, and ecompassing\nproject folder within your node-red instance's node_module folder. It will also restart the\nnode-red instance if it was started using the command:\n\n``\nkill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid\n``\n\nThis makes ongoing development easy as you simply need to refresh the browser to see node changes\nafter you have invoked the flow.",
+        "category": "node maker",
+        "in": [
+            {
+                "x": 40,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "37f124c38d4954c7"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "0eb2dcf71e3bf43f",
+        "type": "template",
+        "z": "65d5e45697fed99a",
+        "name": "nodemakerhtml",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<style>\n    {{{customcss}}}\n</style>\n<script type=\"text/html\" data-template-name=\"{{node_name}}\">\n    {{{inc_node_name}}}\n    <div id=\"node-props\" style=\"width: {{row_width}}px;\">\n        {{{edit_dialog}}}\n    </div><!--node-props-->\n</script>\n\n<script type=\"text/html\" data-help-name=\"{{node_name}}\">\n    {{{helpdetails}}}\n</script>\n\n<script type=\"text/javascript\">\n    RED.nodes.registerType('{{node_name}}', {\n        category: '{{node_category}}',\n        {{#node_palettelabel.length}}\n        paletteLabel: '{{node_palettelabel}}',\n        {{/node_palettelabel.length}}        \n        color: '{{node_color}}',\n        defaults: {\n            name: {value:\"\"},\n            {{{defaults}}}\n        },\n        inputs: {{numinputs}},\n        outputs: {{numoutputs}},\n        icon: \"font-awesome/fa-{{{node_icon}}}\",\n        label: function() {\n            return this.name || \"{{node_name}}\";\n        },\n        labelStyle: function() {\n            return this.name ? \"node_label_italic\" : \"\";\n        },\n        oneditprepare: function() {\n            {{{oneditprepare}}}\n        },\n        oneditresize: function() {\n            {{{oneditresize}}}        \n        },\n        oneditsave: function() {\n            {{{oneditsave}}}\n        },\n        oneditcancel: function() {\n            {{{oneditcancel}}}\n        }\n    });\n    {{{othercode}}}\n</script>\n",
+        "output": "str",
+        "x": 360,
+        "y": 200,
+        "wires": [
+            [
+                "46fdba84593e4a18"
+            ]
+        ]
+    },
+    {
+        "id": "46fdba84593e4a18",
+        "type": "file",
+        "z": "65d5e45697fed99a",
+        "name": "write nodename/nodename.html",
+        "filename": "nodename_html",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 670,
+        "y": 220,
+        "wires": [
+            [
+                "f26a2d19e71211be"
+            ]
+        ]
+    },
+    {
+        "id": "2a9f513d9174ccde",
+        "type": "exec",
+        "z": "65d5e45697fed99a",
+        "command": "kill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "restart node-red",
+        "x": 200,
+        "y": 480,
+        "wires": [
+            [
+                "e674d758d3c14af8"
+            ],
+            [
+                "e674d758d3c14af8"
+            ],
+            [
+                "e674d758d3c14af8"
+            ]
+        ]
+    },
+    {
+        "id": "e674d758d3c14af8",
+        "type": "debug",
+        "z": "65d5e45697fed99a",
+        "name": "debug 50",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "43b6b50718414f9f",
+        "type": "template",
+        "z": "65d5e45697fed99a",
+        "name": "nodemakerjs",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "module.exports = function(RED) {\n    function {{node_name}}(config) {\n        RED.nodes.createNode(this,config);\n        var node = this;\n        {{{runtimecode}}}\n    }\n    RED.nodes.registerType('{{node_name}}', {{node_name}});\n}",
+        "output": "str",
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "8f4279aa76193d2d"
+            ]
+        ]
+    },
+    {
+        "id": "8f4279aa76193d2d",
+        "type": "file",
+        "z": "65d5e45697fed99a",
+        "name": "write nodename/nodename.js",
+        "filename": "nodename_js",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 670,
+        "y": 340,
+        "wires": [
+            [
+                "2a9f513d9174ccde"
+            ]
+        ]
+    },
+    {
+        "id": "fa07b8c430e2643d",
+        "type": "switch",
+        "z": "65d5e45697fed99a",
+        "name": "",
+        "property": "nodemakerhtml",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "empty"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "0eb2dcf71e3bf43f"
+            ],
+            [
+                "987b04d149c1e6b2"
+            ]
+        ]
+    },
+    {
+        "id": "987b04d149c1e6b2",
+        "type": "change",
+        "z": "65d5e45697fed99a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "nodemakerhtml",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "46fdba84593e4a18"
+            ]
+        ]
+    },
+    {
+        "id": "f26a2d19e71211be",
+        "type": "switch",
+        "z": "65d5e45697fed99a",
+        "name": "",
+        "property": "nodemakerjs",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "empty"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 170,
+        "y": 340,
+        "wires": [
+            [
+                "43b6b50718414f9f"
+            ],
+            [
+                "0c85d78ee708d905"
+            ]
+        ]
+    },
+    {
+        "id": "0c85d78ee708d905",
+        "type": "change",
+        "z": "65d5e45697fed99a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "nodemakerjs",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "8f4279aa76193d2d"
+            ]
+        ]
+    },
+    {
+        "id": "3d44470abb3be3af",
+        "type": "function",
+        "z": "65d5e45697fed99a",
+        "name": "compose_code",
+        "func": "if (msg.hasOwnProperty('useTemplates')) return msg;\nmsg._oneditprepare.push(msg.payload);\n\nString.prototype.delRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n        }\n    }\n    return this;\n};\nString.prototype.delLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nvar indent = \" \".repeat(4);\nvar tabIndent = \"\";\nvar edit_dialog = \" \".repeat(8) + '<div class=\"form-row\">' + \"\\n\";\nvar cTotal = 0;\nvar nItems = 0;\nvar initTab = false;\nvar firstTabName = '';\nvar bInRGroup = false;    \nmsg.edit_dialog.forEach(function(item, index) {\n    if (item.indexOf('\"type\":\"tab_definition\"') == -1 && item.indexOf('form-row rgroup') == -1) {\n        item = item.replace(/^/gm, tabIndent);\n        item = item.replace(/^/gm, tabIndent);\n        if (bInRGroup) {\n            item = item.replace(/^/gm, \" \".repeat(4));\n        }\n    }\n    if (item.indexOf('<div class=\"form-row rgroup\"') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        item += \" \".repeat(4) + '<div class=\"form-row\">' + \"\\n\";\n        item = item.replace(/^/gm, \" \".repeat(8) + tabIndent).trimEnd() + \"\\n\";\n        bInRGroup = true;\n        edit_dialog += item;\n        return;\n    }\n    if (item.indexOf('<!--form-row rgroup-->') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        edit_dialog += \" \".repeat(8) + tabIndent + \"</div><!--form-row rgroup-...-template-->\\n\";\n        if (index < msg.edit_dialog.length - 1) {\n            edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n        }\n        bInRGroup = false;\n        return;\n    }\n    if (item.indexOf('\"type\":\"tab_definition\"') > -1) {\n        let tab = JSON.parse(item);\n        if (initTab == false) {\n            \n            // Inject the tab row\n            let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n            edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n            edit_dialog += '<div class=\"form-row func-tabs-row\">' + r;\n            edit_dialog += indent + indent + indent + '<ul style=\"min-width: 600px; margin-bottom: 20px;\" id=\"func-tabs\"></ul>' + \"\\n\";\n            edit_dialog += indent + indent + \"</div><!--func-tabs-row-->\\n\";\n            edit_dialog += indent + indent + '<div id=\"func-tabs-content\" style=\"min-height: calc(100% - 95px);\">' + \"\\n\";\n\n            // Start first tab\n            edit_dialog += indent + indent + indent + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += indent + indent + indent + indent + '<div class=\"form-row\">' + \"\\n\";\n            tabIndent = \" \".repeat(8);\n\n            // Init tab system\n            let code = \"// Prepare tab system\\n\";\n            code += \"var tabs = RED.tabs.create({\\n\";\n            code += \"    id: 'func-tabs',\\n\";\n            code += \"    onchange: function(tab) {\\n\";\n            code += \"        $('#func-tabs-content').children().hide();\\n\";\n            code += \"        $('#' + tab.id).show();\\n\";\n            code += \"    }\\n\";\n            code += \"});\\n\\n\";\n\n            // Add first tab code\n            code += \"// Add first tab, \" + tab.name + \"\\n\";\n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            firstTabName = tab.name;\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n            initTab = true;\n        }else{\n\n            // Add subsequent tabs \n            let r = edit_dialog.getRightMost('    <div class=\"form-row\"');\n            edit_dialog = edit_dialog.delRightMost('    <div class=\"form-row\"');\n            edit_dialog += \"</div><!--func-tab-tab#-->\\n\"; // close out last tab\n            edit_dialog += \" \".repeat(12) + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += \" \".repeat(16) + '<div class=\"form-row\"' + r;\n\n            // Add additional tab code\n            let code = \"// Add tab, \" + tab.name + \"\\n\";            \n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n        }        \n    }else{\n        if (tabIndent == '') {\n            item = item.replace(/^/gm, indent + indent + indent);\n        }else{\n            item = item.replace(/^/gm, indent);\n        }\n        let c = item.delLeftMost('col-').getLeftMost('\"').getLeftMost(' ');\n        cTotal += Number(c);\n        if (cTotal >= 83) {\n            let m = 5 * nItems;\n            if (m > 0) {\n                item = item.replace(\n                    'class=\"col ',\n                    'style=\"margin-right:-' + m.toString() + 'px;\" class=\"col '\n                );\n            }\n            if (nItems == 3) {\n                let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n                edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n                edit_dialog += '<div class=\"form-row\" style=\"margin-right:10px;\">' + r;\n            }\n            edit_dialog += item + \"\\n\";\n            if (index < msg.edit_dialog.length - 1) {\n                if (bInRGroup) {\n                    edit_dialog += \" \".repeat(4);\n                }\n                edit_dialog += indent + indent + tabIndent + \"</div><!--form-row-->\\n\";\n                edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n                cTotal = 0;\n                nItems = 0;\n            }\n        } else {\n            edit_dialog += item + \"\\n\";\n            nItems++;\n        }\n    }\n});\nif (initTab) { \n    edit_dialog += \" \".repeat(16) + \"</div><!--form-row-->\\n\";\n    edit_dialog += \" \".repeat(12) + \"</div><!--func-tab-tab#-->\\n\";\n    edit_dialog += \" \".repeat(8) + \"</div><!--func-tabs-content-->\";\n\n    // Activate the first tab if present\n    let code = \" \".repeat(12) + 'tabs.activateTab(\"func-tab-' + firstTabName + '\");' + \"\\n\";\n    msg._oneditprepare.push(code);\n}else{\n    edit_dialog += \" \".repeat(8) + \"</div><!--form-row-->\";\n}\nmsg.edit_dialog = edit_dialog;\n\nlet defaults = '';\nmsg.defaults.forEach(function(item, index) {\n    defaults += \"            \" + item;\n    if (index < msg.defaults.length -1) {\n        defaults += \",\\n\";\n    }else{\n        defaults += \"\\n\";\n    }\n});\nmsg.defaults = defaults;\nmsg.oneditprepare = \"\\n\" + msg._oneditprepare.join(\"\\n\");\nmsg.oneditresize = \"\\n\" + msg._oneditresize.join(\"\\n\");\nmsg.oneditsave = \"\\n\" + msg._oneditsave.join(\"\\n\");\nmsg.oneditcancel = \"\\n\" + msg._oneditcancel.join(\"\\n\");\nmsg.defaults = msg.defaults.slice(0, -1);\nvar othercode = \"\";\nfor (var key in msg._othercode) {\n    var value = msg._othercode[key];\n    othercode += value;\n}\nmsg.othercode = \"\\n\" + othercode;\nmsg.runtimecode = \"\\n\" + msg.runtimecode.replace(/^/gm, \"    \".repeat(4));\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 100,
+        "wires": [
+            [
+                "fa07b8c430e2643d"
+            ]
+        ]
+    },
+    {
+        "id": "37f124c38d4954c7",
+        "type": "template",
+        "z": "65d5e45697fed99a",
+        "name": "re-size fix",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "            // Allow dynamic re-size after init. appearance \n            setTimeout(function () {\n                $('#node-props').css('width', '100%');\n            }, 30);",
+        "output": "str",
+        "x": 200,
+        "y": 40,
+        "wires": [
+            [
+                "3d44470abb3be3af"
+            ]
+        ]
+    },
+    {
         "id": "da6577bfc4038dbb",
         "type": "subflow",
         "name": "checkbox",
@@ -148,14 +440,14 @@
         "id": "b08129ad78aa131f",
         "type": "function",
         "z": "da6577bfc4038dbb",
-        "name": "function 8",
+        "name": "checkbox_props",
         "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nif (env.get('field_default') == 'checked') {\n    msg.checked = 'checked';\n    msg.field_default = true;\n}else{\n    msg.checked = '';\n    msg.field_default = false;\n}\nmsg.field_columns = env.get('field_columns');\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
+        "x": 210,
         "y": 40,
         "wires": [
             [
@@ -167,14 +459,14 @@
         "id": "005ee05cba1991fe",
         "type": "template",
         "z": "da6577bfc4038dbb",
-        "name": "",
+        "name": "edit_dialog",
         "field": "payload",
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
         "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label for=\"node-input-{{field_name}}\" style=\"width:18px;\">\n    <input type=\"checkbox\" id=\"node-input-{{field_name}}\" name=\"node-input-{{field_name}}\" style=\"margin-top:-3px;\" {{checked}}>{{{field_label}}}</label>\n</div><!--col-->",
         "output": "str",
-        "x": 180,
+        "x": 190,
         "y": 100,
         "wires": [
             [
@@ -186,14 +478,14 @@
         "id": "d46ba26faedba5a9",
         "type": "function",
         "z": "da6577bfc4038dbb",
-        "name": "function 9",
+        "name": "edit_dialog",
         "func": "msg.edit_dialog.push(msg.payload);\nif (msg.field_default == 'checked') {\n    msg.field_default = true;\n}else{\n    msg.field_default = false;\n}\nmsg.defaults.push(msg.field_name + ': {value:' + msg.field_default.toString() + '}');\nif (msg.hasOwnProperty('rgroup_name')) {\n    msg.rgroup_details.push({\n        field_name: msg.field_name,\n        field_default_type: '',\n        field_types: ''\n    });\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
+        "x": 190,
         "y": 160,
         "wires": [
             []
@@ -256,14 +548,14 @@
         "id": "6bb34952a24fe530",
         "type": "function",
         "z": "9771d13dd19bf60f",
-        "name": "compose defaults, othercode",
+        "name": "compose_code",
         "func": "msg._oneditprepare.push(msg.payload);\n\nString.prototype.delRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n        }\n    }\n    return this;\n};\nString.prototype.delLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nvar indent = \" \".repeat(4);\nvar tabIndent = \"\";\nvar edit_dialog = \" \".repeat(8) + '<div class=\"form-row\">' + \"\\n\";\nvar cTotal = 0;\nvar nItems = 0;\nvar initTab = false;\nvar firstTabName = '';\nvar bInRGroup = false;    \nmsg.edit_dialog.forEach(function(item, index) {\n    if (item.indexOf('\"type\":\"tab_definition\"') == -1 && item.indexOf('form-row rgroup') == -1) {\n        item = item.replace(/^/gm, tabIndent);\n        item = item.replace(/^/gm, tabIndent);\n        if (bInRGroup) {\n            item = item.replace(/^/gm, \" \".repeat(4));\n        }\n    }\n    if (item.indexOf('<div class=\"form-row rgroup\"') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        item += \" \".repeat(4) + '<div class=\"form-row\">' + \"\\n\";\n        item = item.replace(/^/gm, \" \".repeat(8) + tabIndent).trimEnd() + \"\\n\";\n        bInRGroup = true;\n        edit_dialog += item;\n        return;\n    }\n    if (item.indexOf('<!--form-row rgroup-->') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        edit_dialog += \" \".repeat(8) + tabIndent + \"</div><!--form-row rgroup-...-template-->\\n\";\n        if (index < msg.edit_dialog.length - 1) {\n            edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n        }\n        bInRGroup = false;\n        return;\n    }\n    if (item.indexOf('\"type\":\"tab_definition\"') > -1) {\n        let tab = JSON.parse(item);\n        if (initTab == false) {\n            \n            // Inject the tab row\n            let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n            edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n            edit_dialog += '<div class=\"form-row func-tabs-row\">' + r;\n            edit_dialog += indent + indent + indent + '<ul style=\"min-width: 600px; margin-bottom: 20px;\" id=\"func-tabs\"></ul>' + \"\\n\";\n            edit_dialog += indent + indent + \"</div><!--func-tabs-row-->\\n\";\n            edit_dialog += indent + indent + '<div id=\"func-tabs-content\" style=\"min-height: calc(100% - 95px);\">' + \"\\n\";\n\n            // Start first tab\n            edit_dialog += indent + indent + indent + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += indent + indent + indent + indent + '<div class=\"form-row\">' + \"\\n\";\n            tabIndent = \" \".repeat(8);\n\n            // Init tab system\n            let code = \"// Prepare tab system\\n\";\n            code += \"var tabs = RED.tabs.create({\\n\";\n            code += \"    id: 'func-tabs',\\n\";\n            code += \"    onchange: function(tab) {\\n\";\n            code += \"        $('#func-tabs-content').children().hide();\\n\";\n            code += \"        $('#' + tab.id).show();\\n\";\n            code += \"    }\\n\";\n            code += \"});\\n\\n\";\n\n            // Add first tab code\n            code += \"// Add first tab, \" + tab.name + \"\\n\";\n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            firstTabName = tab.name;\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n            initTab = true;\n        }else{\n\n            // Add subsequent tabs \n            let r = edit_dialog.getRightMost('    <div class=\"form-row\"');\n            edit_dialog = edit_dialog.delRightMost('    <div class=\"form-row\"');\n            edit_dialog += \"</div><!--func-tab-tab#-->\\n\"; // close out last tab\n            edit_dialog += \" \".repeat(12) + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += \" \".repeat(16) + '<div class=\"form-row\"' + r;\n\n            // Add additional tab code\n            let code = \"// Add tab, \" + tab.name + \"\\n\";            \n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n        }        \n    }else{\n        if (tabIndent == '') {\n            item = item.replace(/^/gm, indent + indent + indent);\n        }else{\n            item = item.replace(/^/gm, indent);\n        }\n        let c = item.delLeftMost('col-').getLeftMost('\"').getLeftMost(' ');\n        cTotal += Number(c);\n        if (cTotal >= 83) {\n            let m = 5 * nItems;\n            if (m > 0) {\n                item = item.replace(\n                    'class=\"col ',\n                    'style=\"margin-right:-' + m.toString() + 'px;\" class=\"col '\n                );\n            }\n            if (nItems == 3) {\n                let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n                edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n                edit_dialog += '<div class=\"form-row\" style=\"margin-right:10px;\">' + r;\n            }\n            edit_dialog += item + \"\\n\";\n            if (index < msg.edit_dialog.length - 1) {\n                if (bInRGroup) {\n                    edit_dialog += \" \".repeat(4);\n                }\n                edit_dialog += indent + indent + tabIndent + \"</div><!--form-row-->\\n\";\n                edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n                cTotal = 0;\n                nItems = 0;\n            }\n        } else {\n            edit_dialog += item + \"\\n\";\n            nItems++;\n        }\n    }\n});\nif (initTab) { \n    edit_dialog += \" \".repeat(16) + \"</div><!--form-row-->\\n\";\n    edit_dialog += \" \".repeat(12) + \"</div><!--func-tab-tab#-->\\n\";\n    edit_dialog += \" \".repeat(8) + \"</div><!--func-tabs-content-->\";\n\n    // Activate the first tab if present\n    let code = \" \".repeat(12) + 'tabs.activateTab(\"func-tab-' + firstTabName + '\");' + \"\\n\";\n    msg._oneditprepare.push(code);\n}else{\n    edit_dialog += \" \".repeat(8) + \"</div><!--form-row-->\";\n}\nmsg.edit_dialog = edit_dialog;\n\nlet defaults = '';\nmsg.defaults.forEach(function(item, index) {\n    defaults += \"            \" + item;\n    if (index < msg.defaults.length -1) {\n        defaults += \",\\n\";\n    }else{\n        defaults += \"\\n\";\n    }\n});\nmsg.defaults = defaults;\nmsg.oneditprepare = \"\\n\" + msg._oneditprepare.join(\"\\n\");\nmsg.oneditresize = \"\\n\" + msg._oneditresize.join(\"\\n\");\nmsg.oneditsave = \"\\n\" + msg._oneditsave.join(\"\\n\");\nmsg.oneditcancel = \"\\n\" + msg._oneditcancel.join(\"\\n\");\nmsg.defaults = msg.defaults.slice(0, -1);\nvar othercode = \"\";\nfor (var key in msg._othercode) {\n    var value = msg._othercode[key];\n    othercode += value;\n}\nmsg.othercode = \"\\n\" + othercode;\nmsg.runtimecode = \"\\n\" + msg.runtimecode.replace(/^/gm, \"    \".repeat(4));\nmsg.useTemplates = true;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 240,
+        "x": 200,
         "y": 100,
         "wires": [
             []
@@ -434,14 +726,14 @@
         "id": "5fd3369e032c68b0",
         "type": "function",
         "z": "c70964ba34544694",
-        "name": "function 21",
+        "name": "button_props",
         "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nlet icon = env.get('field_icon');\nif (icon != '') {\n    msg.field_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n} else {\n    msg.field_icon = '';\n}\nmsg.field_label_elm = msg.field_icon + msg.field_label;\nmsg.button_size = env.get('button_size');\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 170,
+        "x": 180,
         "y": 40,
         "wires": [
             [
@@ -453,14 +745,14 @@
         "id": "09a5b20f490d7474",
         "type": "template",
         "z": "c70964ba34544694",
-        "name": "",
+        "name": "edit_dialog",
         "field": "payload",
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
         "template": "<div class=\"{{field_columns}}\">\n    <button id=\"btn_{{field_name}}\" type=\"button\" class=\"{{{button_size}}}\">{{{field_label_elm}}}</button>\n</div>",
         "output": "str",
-        "x": 160,
+        "x": 170,
         "y": 100,
         "wires": [
             [
@@ -472,7 +764,7 @@
         "id": "41f4b3c1077a06f2",
         "type": "function",
         "z": "c70964ba34544694",
-        "name": "function 22",
+        "name": "edit_dialog",
         "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
@@ -504,7 +796,7 @@
         ],
         "out": [
             {
-                "x": 320,
+                "x": 360,
                 "y": 160,
                 "wires": [
                     {
@@ -610,7 +902,7 @@
         "name": "edit_dialog",
         "field": "payload",
         "fieldType": "msg",
-        "format": "handlebars",
+        "format": "html",
         "syntax": "mustache",
         "template": "<div class=\"{{field_columns}} reg-lbl\">\n    <label class=\"full-lbl\">\n        {{{label_icon}}}<span>{{{label_caption}}}</span>\n    </label>\n</div><!--col-->",
         "output": "str",
@@ -626,14 +918,14 @@
         "id": "b15245fe8570aaf7",
         "type": "function",
         "z": "d0a39641213352a7",
-        "name": "function 6",
+        "name": "label_props",
         "func": "msg.label_caption = env.get('label_caption');\nlet icon = env.get('label_icon');\nif (icon != '') {\n    msg.label_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n}else{\n    msg.label_icon = '';\n} \nmsg.field_columns = env.get('field_columns');\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
+        "x": 190,
         "y": 40,
         "wires": [
             [
@@ -645,14 +937,14 @@
         "id": "84054fdfc2c499b0",
         "type": "function",
         "z": "d0a39641213352a7",
-        "name": "function 7",
+        "name": "edit_dialog",
         "func": "msg.edit_dialog.push(msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
+        "x": 190,
         "y": 160,
         "wires": [
             []
@@ -996,14 +1288,14 @@
         "id": "73a3b0f6af6b0aeb",
         "type": "function",
         "z": "7062e6f741533eb2",
-        "name": "function 2",
+        "name": "field_props",
         "func": "msg.field_name = env.get('field_name');\nmsg.field_label = env.get('field_label');\nlet icon = env.get('field_icon');\nif (icon != '') {\n    msg.field_icon = '<i class=\"fa fa-' + icon + '\"></i> ';\n}else{\n    msg.field_icon = '';\n}\nif (msg.field_label == '') {\n    msg.field_label_elm = '';\n}else{\n    msg.field_label_elm = '<label for=\"node-input-' + msg.field_name + '\">';\n    msg.field_label_elm += msg.field_icon + msg.field_label + '</label>';\n}\nmsg.field_placeholder = env.get('field_placeholder');\nmsg.field_required = env.get('field_required');\nmsg.field_default = env.get('field_default');\n\nmsg.field_type_string = env.get('field_type_string');\nmsg.field_type_number = env.get('field_type_number');\nmsg.field_type_boolean = env.get('field_type_boolean');\nmsg.field_type_msg = env.get('field_type_msg');\nmsg.field_type_flow = env.get('field_type_flow');\nmsg.field_type_global = env.get('field_type_global');\nmsg.field_type_json = env.get('field_type_json');\nmsg.field_type_additional = env.get('field_type_additional');\nmsg.field_default_type = env.get('field_default_type');\nmsg.field_types = [];\nif (msg.field_type_string) {\n    msg.field_types.push('str');\n}\nif (msg.field_type_number) {\n    msg.field_types.push('num');\n}\nif (msg.field_type_boolean) {\n    msg.field_types.push('bool');\n}\nif (msg.field_type_msg) {\n    msg.field_types.push('msg');\n}\nif (msg.field_type_flow) {\n    msg.field_types.push('flow');\n}\nif (msg.field_type_global) {\n    msg.field_types.push('global');\n}\nif (msg.field_type_json) {\n    msg.field_types.push('json');\n}\nif (msg.field_type_additional) {\n    msg.field_additional_types = env.get('field_additional_types');\n    msg.field_types = msg.field_types.concat(msg.field_additional_types);\n}\nmsg.field_has_hidden_type = '';\nif (msg.field_types.length > 0) {\n    if (msg.field_default_type == '') {\n        msg.field_default_type = msg.field_types[0];\n    }\n    msg.field_has_hidden_type = '<input type=\"hidden\" id=\"node-input-' + env.get('field_name') + 'Type\"';\n    msg.field_has_hidden_type += 'value=\"' + msg.field_default_type + '\">';\n    msg.field_types_s = JSON.stringify(msg.field_types);\n}\nlet fc = env.get('field_columns');\nif (msg.field_label == '') {\n    fc += ' no-label';\n}\nmsg.field_columns = fc;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 140,
+        "x": 150,
         "y": 40,
         "wires": [
             [
@@ -1015,14 +1307,14 @@
         "id": "a0b8b4c7a26b07dd",
         "type": "function",
         "z": "7062e6f741533eb2",
-        "name": "function 3",
+        "name": "edit_dialog",
         "func": "msg.edit_dialog.push(msg.payload);\nlet theDefault = msg.field_default;\nif (msg.field_default_type != 'bool' && msg.field_default_type != 'num') {\n    theDefault = '\"' + theDefault + '\"';\n}\nlet required = '';\nif (msg.field_required) {\n    required = ', required:true';\n}\nmsg.defaults.push(msg.field_name + ': {value:' + theDefault + required + '}');\nif (msg.field_types.length > 0) {\n    msg.defaults.push(msg.field_name + 'Type: {value:\"' + msg.field_default_type + '\"}');\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 140,
+        "x": 150,
         "y": 160,
         "wires": [
             [
@@ -1034,14 +1326,14 @@
         "id": "3c2eac4c542cd18e",
         "type": "template",
         "z": "7062e6f741533eb2",
-        "name": "oneditprepare",
+        "name": "oneditprepare_template",
         "field": "payload",
         "fieldType": "msg",
         "format": "javascript",
         "syntax": "mustache",
         "template": "            // Prepare field {{field_name}}\n            $(\"#node-input-{{field_name}}\").typedInput({\n                type: \"{{{field_default_type}}}\",\n                types: {{{field_types_s}}},\n                typeField: \"#node-input-{{field_name}}Type\"\n            });\n",
         "output": "str",
-        "x": 460,
+        "x": 490,
         "y": 40,
         "wires": [
             [
@@ -1070,9 +1362,7 @@
         "x": 180,
         "y": 220,
         "wires": [
-            [
-                "11ee4d2cf1435263"
-            ],
+            [],
             [
                 "eda19645927d3dda"
             ]
@@ -1082,14 +1372,14 @@
         "id": "67eed6e284e28123",
         "type": "function",
         "z": "7062e6f741533eb2",
-        "name": "function 4",
+        "name": "oneditprepare",
         "func": "if (!msg.hasOwnProperty('rgroup_name')) {\n    msg._oneditprepare.push(msg.payload);\n}else{\n    msg.rgroup_details.push({\n        field_name: msg.field_name,\n        field_default_type: msg.field_default_type,\n        field_types: msg.field_types,\n        field_default: msg.field_default\n    });\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 440,
+        "x": 460,
         "y": 100,
         "wires": [
             []
@@ -1099,7 +1389,7 @@
         "id": "eda19645927d3dda",
         "type": "function",
         "z": "7062e6f741533eb2",
-        "name": "function 38",
+        "name": "field_group",
         "func": "if (msg.hasOwnProperty('rgroup_name')) {\n    msg.rgroup_details.push({\n        field_name: msg.field_name,\n        field_default_type: '',\n        field_types: '',\n        field_default: msg.field_default\n    });\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
@@ -1110,321 +1400,6 @@
         "y": 260,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "11ee4d2cf1435263",
-        "type": "junction",
-        "z": "7062e6f741533eb2",
-        "x": 340,
-        "y": 40,
-        "wires": [
-            [
-                "3c2eac4c542cd18e"
-            ]
-        ]
-    },
-    {
-        "id": "65d5e45697fed99a",
-        "type": "subflow",
-        "name": "finish node",
-        "info": "A finish node marks the end of a node definition. The finish node will finalize writing all\nthe files needed to create your node; the package.json, html, javascript, and ecompassing\nproject folder within your node-red instance's node_module folder. It will also restart the\nnode-red instance if it was started using the command:\n\n``\nkill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid\n``\n\nThis makes ongoing development easy as you simply need to refresh the browser to see node changes\nafter you have invoked the flow.",
-        "category": "node maker",
-        "in": [
-            {
-                "x": 40,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "37f124c38d4954c7"
-                    }
-                ]
-            }
-        ],
-        "out": [],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
-        "id": "0eb2dcf71e3bf43f",
-        "type": "template",
-        "z": "65d5e45697fed99a",
-        "name": "nodemakerhtml",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "<style>\n    {{{customcss}}}\n</style>\n<script type=\"text/html\" data-template-name=\"{{node_name}}\">\n    {{{inc_node_name}}}\n    <div id=\"node-props\" style=\"width: {{row_width}}px;\">\n        {{{edit_dialog}}}\n    </div><!--node-props-->\n</script>\n\n<script type=\"text/html\" data-help-name=\"{{node_name}}\">\n    {{{helpdetails}}}\n</script>\n\n<script type=\"text/javascript\">\n    RED.nodes.registerType('{{node_name}}', {\n        category: '{{node_category}}',\n        color: '{{node_color}}',\n        defaults: {\n            name: {value:\"\"},\n            {{{defaults}}}\n        },\n        inputs: {{numinputs}},\n        outputs: {{numoutputs}},\n        icon: \"font-awesome/fa-{{{node_icon}}}\",\n        label: function() {\n            return this.name || \"{{node_name}}\";\n        },\n        labelStyle: function() {\n            return this.name ? \"node_label_italic\" : \"\";\n        },\n        oneditprepare: function() {\n            {{{oneditprepare}}}\n        },\n        oneditresize: function() {\n            {{{oneditresize}}}        \n        },\n        oneditsave: function() {\n            {{{oneditsave}}}\n        },\n        oneditcancel: function() {\n            {{{oneditcancel}}}\n        }\n    });\n    {{{othercode}}}\n</script>\n",
-        "output": "str",
-        "x": 360,
-        "y": 200,
-        "wires": [
-            [
-                "1d0b5202023b245b"
-            ]
-        ]
-    },
-    {
-        "id": "46fdba84593e4a18",
-        "type": "file",
-        "z": "65d5e45697fed99a",
-        "name": "write nodename/nodename.html",
-        "filename": "nodename_html",
-        "filenameType": "msg",
-        "appendNewline": false,
-        "createDir": true,
-        "overwriteFile": "true",
-        "encoding": "utf8",
-        "x": 670,
-        "y": 220,
-        "wires": [
-            [
-                "f26a2d19e71211be"
-            ]
-        ]
-    },
-    {
-        "id": "2a9f513d9174ccde",
-        "type": "exec",
-        "z": "65d5e45697fed99a",
-        "command": "kill -9 `cat /tmp/node-red.pid`; nohup nice node-red > /dev/null 2>&1 & echo $! > /tmp/node-red.pid",
-        "addpay": "",
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "restart node-red",
-        "x": 200,
-        "y": 480,
-        "wires": [
-            [
-                "e674d758d3c14af8"
-            ],
-            [
-                "e674d758d3c14af8"
-            ],
-            [
-                "e674d758d3c14af8"
-            ]
-        ]
-    },
-    {
-        "id": "e674d758d3c14af8",
-        "type": "debug",
-        "z": "65d5e45697fed99a",
-        "name": "debug 50",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 440,
-        "y": 480,
-        "wires": []
-    },
-    {
-        "id": "43b6b50718414f9f",
-        "type": "template",
-        "z": "65d5e45697fed99a",
-        "name": "nodemakerjs",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "module.exports = function(RED) {\n    function {{node_name}}(config) {\n        RED.nodes.createNode(this,config);\n        var node = this;\n        {{{runtimecode}}}\n    }\n    RED.nodes.registerType('{{node_name}}', {{node_name}});\n}",
-        "output": "str",
-        "x": 350,
-        "y": 320,
-        "wires": [
-            [
-                "8f4279aa76193d2d"
-            ]
-        ]
-    },
-    {
-        "id": "8f4279aa76193d2d",
-        "type": "file",
-        "z": "65d5e45697fed99a",
-        "name": "write nodename/nodename.js",
-        "filename": "nodename_js",
-        "filenameType": "msg",
-        "appendNewline": false,
-        "createDir": true,
-        "overwriteFile": "true",
-        "encoding": "utf8",
-        "x": 670,
-        "y": 340,
-        "wires": [
-            [
-                "2a9f513d9174ccde"
-            ]
-        ]
-    },
-    {
-        "id": "fa07b8c430e2643d",
-        "type": "switch",
-        "z": "65d5e45697fed99a",
-        "name": "",
-        "property": "nodemakerhtml",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "empty"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 170,
-        "y": 220,
-        "wires": [
-            [
-                "0eb2dcf71e3bf43f"
-            ],
-            [
-                "987b04d149c1e6b2"
-            ]
-        ]
-    },
-    {
-        "id": "987b04d149c1e6b2",
-        "type": "change",
-        "z": "65d5e45697fed99a",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "nodemakerhtml",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 360,
-        "y": 240,
-        "wires": [
-            [
-                "1d0b5202023b245b"
-            ]
-        ]
-    },
-    {
-        "id": "f26a2d19e71211be",
-        "type": "switch",
-        "z": "65d5e45697fed99a",
-        "name": "",
-        "property": "nodemakerjs",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "empty"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 170,
-        "y": 340,
-        "wires": [
-            [
-                "43b6b50718414f9f"
-            ],
-            [
-                "0c85d78ee708d905"
-            ]
-        ]
-    },
-    {
-        "id": "0c85d78ee708d905",
-        "type": "change",
-        "z": "65d5e45697fed99a",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "nodemakerjs",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 360,
-        "y": 360,
-        "wires": [
-            [
-                "8f4279aa76193d2d"
-            ]
-        ]
-    },
-    {
-        "id": "3d44470abb3be3af",
-        "type": "function",
-        "z": "65d5e45697fed99a",
-        "name": "compose defaults, othercode",
-        "func": "if (msg.hasOwnProperty('useTemplates')) return msg;\nmsg._oneditprepare.push(msg.payload);\n\nString.prototype.delRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getRightMost = function (sFind) {\n    for (var i = this.length; i >= 0; i = i - 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n        }\n    }\n    return this;\n};\nString.prototype.delLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(f + sFind.length, f + sFind.length + this.length);\n            break;\n        }\n    }\n    return this;\n};\nString.prototype.getLeftMost = function (sFind) {\n    for (var i = 0; i < this.length; i = i + 1) {\n        var f = this.indexOf(sFind, i);\n        if (f != -1) {\n            return this.substring(0, f);\n            break;\n        }\n    }\n    return this;\n};\nvar indent = \" \".repeat(4);\nvar tabIndent = \"\";\nvar edit_dialog = \" \".repeat(8) + '<div class=\"form-row\">' + \"\\n\";\nvar cTotal = 0;\nvar nItems = 0;\nvar initTab = false;\nvar firstTabName = '';\nvar bInRGroup = false;    \nmsg.edit_dialog.forEach(function(item, index) {\n    if (item.indexOf('\"type\":\"tab_definition\"') == -1 && item.indexOf('form-row rgroup') == -1) {\n        item = item.replace(/^/gm, tabIndent);\n        item = item.replace(/^/gm, tabIndent);\n        if (bInRGroup) {\n            item = item.replace(/^/gm, \" \".repeat(4));\n        }\n    }\n    if (item.indexOf('<div class=\"form-row rgroup\"') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        item += \" \".repeat(4) + '<div class=\"form-row\">' + \"\\n\";\n        item = item.replace(/^/gm, \" \".repeat(8) + tabIndent).trimEnd() + \"\\n\";\n        bInRGroup = true;\n        edit_dialog += item;\n        return;\n    }\n    if (item.indexOf('<!--form-row rgroup-->') > -1) {\n        edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">').trimEnd() + \"\\n\";\n        edit_dialog += \" \".repeat(8) + tabIndent + \"</div><!--form-row rgroup-...-template-->\\n\";\n        if (index < msg.edit_dialog.length - 1) {\n            edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n        }\n        bInRGroup = false;\n        return;\n    }\n    if (item.indexOf('\"type\":\"tab_definition\"') > -1) {\n        let tab = JSON.parse(item);\n        if (initTab == false) {\n            \n            // Inject the tab row\n            let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n            edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n            edit_dialog += '<div class=\"form-row func-tabs-row\">' + r;\n            edit_dialog += indent + indent + indent + '<ul style=\"min-width: 600px; margin-bottom: 20px;\" id=\"func-tabs\"></ul>' + \"\\n\";\n            edit_dialog += indent + indent + \"</div><!--func-tabs-row-->\\n\";\n            edit_dialog += indent + indent + '<div id=\"func-tabs-content\" style=\"min-height: calc(100% - 95px);\">' + \"\\n\";\n\n            // Start first tab\n            edit_dialog += indent + indent + indent + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += indent + indent + indent + indent + '<div class=\"form-row\">' + \"\\n\";\n            tabIndent = \" \".repeat(8);\n\n            // Init tab system\n            let code = \"// Prepare tab system\\n\";\n            code += \"var tabs = RED.tabs.create({\\n\";\n            code += \"    id: 'func-tabs',\\n\";\n            code += \"    onchange: function(tab) {\\n\";\n            code += \"        $('#func-tabs-content').children().hide();\\n\";\n            code += \"        $('#' + tab.id).show();\\n\";\n            code += \"    }\\n\";\n            code += \"});\\n\\n\";\n\n            // Add first tab code\n            code += \"// Add first tab, \" + tab.name + \"\\n\";\n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            firstTabName = tab.name;\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n            initTab = true;\n        }else{\n\n            // Add subsequent tabs \n            let r = edit_dialog.getRightMost('    <div class=\"form-row\"');\n            edit_dialog = edit_dialog.delRightMost('    <div class=\"form-row\"');\n            edit_dialog += \"</div><!--func-tab-tab#-->\\n\"; // close out last tab\n            edit_dialog += \" \".repeat(12) + '<div id=\"func-tab-' + tab.name + '\" style=\"display:none\">' + \"\\n\";\n            edit_dialog += \" \".repeat(16) + '<div class=\"form-row\"' + r;\n\n            // Add additional tab code\n            let code = \"// Add tab, \" + tab.name + \"\\n\";            \n            code += \"tabs.addTab({\\n\";\n            code += \"    id: 'func-tab-\" + tab.name + \"',\\n\";\n            code += \"    iconClass: 'fa fa-\" + tab.icon + \"',\\n\";\n            code += \"    label: '\" + tab.label + \"'\\n\";\n            code += \"});\\n\\n\";\n            code = code.replace(/^/gm, \" \".repeat(12));\n            msg._oneditprepare.push(code);\n        }        \n    }else{\n        if (tabIndent == '') {\n            item = item.replace(/^/gm, indent + indent + indent);\n        }else{\n            item = item.replace(/^/gm, indent);\n        }\n        let c = item.delLeftMost('col-').getLeftMost('\"').getLeftMost(' ');\n        cTotal += Number(c);\n        if (cTotal >= 83) {\n            let m = 5 * nItems;\n            if (m > 0) {\n                item = item.replace(\n                    'class=\"col ',\n                    'style=\"margin-right:-' + m.toString() + 'px;\" class=\"col '\n                );\n            }\n            if (nItems == 3) {\n                let r = edit_dialog.getRightMost('<div class=\"form-row\">');\n                edit_dialog = edit_dialog.delRightMost('<div class=\"form-row\">');\n                edit_dialog += '<div class=\"form-row\" style=\"margin-right:10px;\">' + r;\n            }\n            edit_dialog += item + \"\\n\";\n            if (index < msg.edit_dialog.length - 1) {\n                if (bInRGroup) {\n                    edit_dialog += \" \".repeat(4);\n                }\n                edit_dialog += indent + indent + tabIndent + \"</div><!--form-row-->\\n\";\n                edit_dialog += indent + indent + tabIndent + '<div class=\"form-row\">' + \"\\n\";\n                cTotal = 0;\n                nItems = 0;\n            }\n        } else {\n            edit_dialog += item + \"\\n\";\n            nItems++;\n        }\n    }\n});\nif (initTab) { \n    edit_dialog += \" \".repeat(16) + \"</div><!--form-row-->\\n\";\n    edit_dialog += \" \".repeat(12) + \"</div><!--func-tab-tab#-->\\n\";\n    edit_dialog += \" \".repeat(8) + \"</div><!--func-tabs-content-->\";\n\n    // Activate the first tab if present\n    let code = \" \".repeat(12) + 'tabs.activateTab(\"func-tab-' + firstTabName + '\");' + \"\\n\";\n    msg._oneditprepare.push(code);\n}else{\n    edit_dialog += \" \".repeat(8) + \"</div><!--form-row-->\";\n}\nmsg.edit_dialog = edit_dialog;\n\nlet defaults = '';\nmsg.defaults.forEach(function(item, index) {\n    defaults += \"            \" + item;\n    if (index < msg.defaults.length -1) {\n        defaults += \",\\n\";\n    }else{\n        defaults += \"\\n\";\n    }\n});\nmsg.defaults = defaults;\nmsg.oneditprepare = \"\\n\" + msg._oneditprepare.join(\"\\n\");\nmsg.oneditresize = \"\\n\" + msg._oneditresize.join(\"\\n\");\nmsg.oneditsave = \"\\n\" + msg._oneditsave.join(\"\\n\");\nmsg.oneditcancel = \"\\n\" + msg._oneditcancel.join(\"\\n\");\nmsg.defaults = msg.defaults.slice(0, -1);\nvar othercode = \"\";\nfor (var key in msg._othercode) {\n    var value = msg._othercode[key];\n    othercode += value;\n}\nmsg.othercode = \"\\n\" + othercode;\nmsg.runtimecode = \"\\n\" + msg.runtimecode.replace(/^/gm, \"    \".repeat(4));\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 260,
-        "y": 100,
-        "wires": [
-            [
-                "fa07b8c430e2643d"
-            ]
-        ]
-    },
-    {
-        "id": "37f124c38d4954c7",
-        "type": "template",
-        "z": "65d5e45697fed99a",
-        "name": "re-size fix",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "javascript",
-        "syntax": "mustache",
-        "template": "            // Allow dynamic re-size after init. appearance \n            setTimeout(function () {\n                $('#node-props').css('width', '100%');\n            }, 30);",
-        "output": "str",
-        "x": 200,
-        "y": 40,
-        "wires": [
-            [
-                "3d44470abb3be3af"
-            ]
-        ]
-    },
-    {
-        "id": "1d0b5202023b245b",
-        "type": "junction",
-        "z": "65d5e45697fed99a",
-        "x": 500,
-        "y": 220,
-        "wires": [
-            [
-                "46fdba84593e4a18"
-            ]
         ]
     },
     {
@@ -1512,6 +1487,22 @@
                 "ui": {
                     "label": {
                         "en-US": "Category"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "node_palettelabel",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Palette Label"
                     },
                     "type": "input",
                     "opts": {
@@ -1672,14 +1663,15 @@
         "id": "729874432b3551f1",
         "type": "function",
         "z": "85e13a6e48f6a1c3",
-        "name": "function 1",
-        "func": "msg.node_name = env.get('node_name');\nmsg.node_version = env.get('node_version');\nmsg.node_description = env.get('node_description');\nmsg.node_folder = env.get('HOME') + '/.node-red/node_modules/node-red-' + msg.node_name + '/';\nlet k = env.get('keywords');\nk = '\"' + k.replaceAll(' ', '').replaceAll(',', '\",\"') + '\"';\nmsg.node_category = env.get('node_category');\nmsg.node_icon = env.get('node_icon');\nmsg.node_color = env.get('node_color');\nmsg.keywords = k;\nmsg.author_name = env.get('author_name');\nmsg.author_email = env.get('author_email');\nmsg.github_handle = env.get('github_handle');\nmsg.package_json = msg.node_folder + 'package.json';\nmsg.gitignore = msg.node_folder + '.gitignore';\nmsg.license = msg.node_folder + 'LICENSE';\nmsg.readme = msg.node_folder + 'README.md';\nmsg.nodename_js = msg.node_folder + msg.node_name + '/' + msg.node_name + '.js';\nmsg.nodename_html = msg.node_folder + msg.node_name + '/' + msg.node_name + '.html';\nmsg.edit_dialog = [];\nmsg._oneditprepare = [];\nmsg._oneditresize = [];\nmsg._oneditsave = [];\nmsg._oneditcancel = [];\nmsg._othercode = {};\nmsg.defaults = [];\nmsg.row_width = env.get('row_width');\nmsg.numinputs = env.get('numinputs');\nmsg.numoutputs = env.get('numoutputs');\nmsg.inc_node_name = env.get('inc_node_name');\nmsg.nodemakerhtml = '';\nmsg.nodemakerjs = '';\nmsg.runtimecode = '';\nif (msg.inc_node_name) {\n    msg.inc_node_name = '    <div class=\"form-row\">' +\"\\n\";\n    msg.inc_node_name += '        <label for=\"node-input-name\"><i class=\"icon-tag\"></i> Name</label>' + \"\\n\";\n    msg.inc_node_name += '        <input type=\"text\" id=\"node-input-name\" placeholder=\"Name\">' + \"\\n\";\n    msg.inc_node_name += \"    </div>\";\n}else{\n    msg.inc_node_name = '';\n}\nreturn msg;\n",
+        "name": "start_node",
+        "func": "msg.node_name = env.get('node_name');\nmsg.node_version = env.get('node_version');\nmsg.node_description = env.get('node_description');\nmsg.node_folder = env.get('PWD') + '/node_modules/node-red-' + msg.node_name + '/';\nlet k = env.get('keywords');\nk = '\"' + k.replaceAll(' ', '').replaceAll(',', '\",\"') + '\"';\nmsg.node_category = env.get('node_category');\nmsg.node_palettelabel = env.get('node_palettelabel');\nmsg.node_icon = env.get('node_icon');\nmsg.node_color = env.get('node_color');\nmsg.keywords = k;\nmsg.author_name = env.get('author_name');\nmsg.author_email = env.get('author_email');\nmsg.github_handle = env.get('github_handle');\nmsg.package_json = msg.node_folder + 'package.json';\nmsg.gitignore = msg.node_folder + '.gitignore';\nmsg.license = msg.node_folder + 'LICENSE';\nmsg.readme = msg.node_folder + 'README.md';\nmsg.nodename_js = msg.node_folder + msg.node_name + '/' + msg.node_name + '.js';\nmsg.nodename_html = msg.node_folder + msg.node_name + '/' + msg.node_name + '.html';\nmsg.edit_dialog = [];\nmsg._oneditprepare = [];\nmsg._oneditresize = [];\nmsg._oneditsave = [];\nmsg._oneditcancel = [];\nmsg._othercode = {};\nmsg.defaults = [];\nmsg.row_width = env.get('row_width');\nmsg.numinputs = env.get('numinputs');\nmsg.numoutputs = env.get('numoutputs');\nmsg.inc_node_name = env.get('inc_node_name');\nmsg.nodemakerhtml = '';\nmsg.nodemakerjs = '';\nmsg.runtimecode = '';\nif (msg.inc_node_name) {\n    msg.inc_node_name = '    <div class=\"form-row\">' +\"\\n\";\n    msg.inc_node_name += '        <label for=\"node-input-name\"><i class=\"icon-tag\"></i> Name</label>' + \"\\n\";\n    msg.inc_node_name += '        <input type=\"text\" id=\"node-input-name\" placeholder=\"Name\">' + \"\\n\";\n    msg.inc_node_name += \"    </div>\";\n}else{\n    msg.inc_node_name = '';\n}\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 160,
+        "x": 150,
         "y": 40,
         "wires": [
             [
@@ -1698,7 +1690,7 @@
         "name": "package.json",
         "field": "payload",
         "fieldType": "msg",
-        "format": "json",
+        "format": "handlebars",
         "syntax": "mustache",
         "template": "{\n    \"name\": \"node-red-{{node_name}}\",\n    \"version\": \"{{node_version}}\",\n    \"description\": \"A node that merges msg objects until all defined properties are present / conditions met before passing the combined msg along.\",\n    \"author\": \"{{author_name}} <{{author_email}}>\",\n    \"license\": \"MIT\",\n    \"keywords\": [{{{keywords}}}],\n    \"repository\": {\n      \"type\": \"git\",\n      \"url\": \"https://github.com/{{github_handle}}/node-red-{{node_name}}.git\"\n    },\n    \"dependencies\": {\n    },\n    \"node-red\": {\n      \"nodes\": {\n        \"{{node_name}}\": \"{{node_name}}/{{node_name}}.js\"\n      }\n    }\n  }\n  ",
         "output": "str",
@@ -1806,7 +1798,7 @@
         "name": "README.md",
         "field": "payload",
         "fieldType": "msg",
-        "format": "markdown",
+        "format": "handlebars",
         "syntax": "mustache",
         "template": "# node-red-{{node_name}}\n{{{node_description}}}\n",
         "output": "str",
@@ -1839,7 +1831,7 @@
         "id": "1d506b65823c19c3",
         "type": "template",
         "z": "85e13a6e48f6a1c3",
-        "name": "custom.css",
+        "name": "customcss",
         "field": "customcss",
         "fieldType": "msg",
         "format": "css",
@@ -1853,9 +1845,41 @@
         ]
     },
     {
+        "id": "142274a930a39bbd",
+        "type": "tab",
+        "label": "flow2src",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "cb1013b93ba4d83e",
+        "type": "junction",
+        "z": "142274a930a39bbd",
+        "x": 200,
+        "y": 560,
+        "wires": [
+            [
+                "269a8be2dc96e712"
+            ]
+        ]
+    },
+    {
+        "id": "269a8be2dc96e712",
+        "type": "junction",
+        "z": "142274a930a39bbd",
+        "x": 280,
+        "y": 60,
+        "wires": [
+            [
+                "e5067a7a4c311090"
+            ]
+        ]
+    },
+    {
         "id": "6d15f18bdedc6bc8",
         "type": "subflow:85e13a6e48f6a1c3",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -1933,18 +1957,9 @@
         ]
     },
     {
-        "id": "8a8f094b96ed219d",
-        "type": "subflow:65d5e45697fed99a",
-        "z": "230ae449a55a426f",
-        "name": "",
-        "x": 390,
-        "y": 400,
-        "wires": []
-    },
-    {
         "id": "00cdc75ccbb12be8",
         "type": "inject",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "props": [
             {
@@ -1973,13 +1988,13 @@
     {
         "id": "99e7dad03ef8fc7b",
         "type": "template",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "nodemakerjs",
         "field": "nodemakerjs",
         "fieldType": "msg",
         "format": "javascript",
         "syntax": "mustache",
-        "template": "module.exports = function(RED) {\n    function {{node_name}}(config) {\n        RED.nodes.createNode(this, config);\n        var node = this;\n        node.on('input', function (msg) {\n            if (!msg.hasOwnProperty('srcFolder')) return;\n            if (msg.srcFolder.trim() == '') msg.srcFolder = 'src';\n\n            // String manipulation functions\n            (function () {\n                String.prototype.delRightMost = function(sFind) {\n                    for (var i = this.length; i >= 0; i = i - 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(0, f);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.getRightMost = function(sFind) {\n                    for (var i = this.length; i >= 0; i = i - 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(f + sFind.length, f + sFind.length + this.length);\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.delLeftMost = function(sFind) {\n                    for (var i = 0; i < this.length; i = i + 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(f + sFind.length, f + sFind.length + this.length);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.getLeftMost = function(sFind) {\n                    for (var i = 0; i < this.length; i = i + 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(0, f);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n            })();\n\n            // Get the flowFile\n            const fs = require('fs');\n            let flowFile = RED.settings.userDir;\n            try{\n                if (RED.settings.get('editorTheme').projects.enabled) {\n                    let project = RED.settings.get('projects').activeProject;\n                    let package_json = flowFile + '/projects/' + project + '/package.json';\n\n                    // Read the package.json for the flowfile\n                    let pk = JSON.parse(fs.readFileSync(package_json).toString());\n                    flowFile += '/projects/' + project + '/' + pk['node-red']['settings']['flowFile'];\n                } else {\n                    flowFile += '/' + RED.settings.flowFile;\n                }\n            } catch(e) {\n                node.error(e);\n                return;\n            }\n\n            // Read and parse the flow file\n            let ff = JSON.parse(fs.readFileSync(flowFile).toString());\n            let path = flowFile.delRightMost('/') + '/' + msg.srcFolder;\n\n            // Write the relevant flow properties to the src folder\n            if (msg.action == 'flow2src') {\n                try {\n\n                    // Gather flows and subflows as an array\n                    let incFlows = [];\n                    if (config.incFlows.trim() != '*') {\n                        incFlows = config.incFlows.split(',').map(function (f) { return f.trim() });\n                    } else {\n                        incFlows = null;\n                    }\n                    let incSubflows = [];\n                    if (config.incSubflows.trim() != '*') {\n                        incSubflows = config.incSubflows.split(',').map(function (f) { return f.trim() });\n                    } else {\n                        incSubflows = null;\n                    }\n\n                    // Gather flow ids, folder safe names, and nodes for analysis in a single pass\n                    let theNodes = [];\n                    let theFolders = [];\n                    let theIDs = [];\n                    ff.forEach(function (obj) {\n\n                        // Check for matching flows\n                        if (obj.type == 'tab') {\n                            if (incFlows != null) {\n                                if (incFlows.indexOf(obj.label) == -1) {\n                                    return;\n                                }\n                            }\n                            theFolders.push(obj.label.replace(/[^a-z0-9]/gi, '_'));\n                            theIDs.push(obj.id);\n                        }\n\n                        // Check for matching subflows\n                        if (obj.type == 'subflow') {\n                            if (incSubflows != null) {\n                                if (incSubflows.indexOf(obj.name) == -1) {\n                                    return;\n                                }\n                            }\n                            theFolders.push(obj.name.replace(/[^a-z0-9]/gi, '_'));\n                            theIDs.push(obj.id);\n                        }\n                        // Gather nodes and templates\n                        if (obj.type == 'template' || obj.type == 'function') {\n                            theNodes.push(obj);\n                        }\n                    });\n\n                    // Narrow the nodes to just the flows and subflows we're interested in\n                    let existingFiles = [];\n                    let srcNodes = [];\n                    theNodes.forEach(function (obj) {\n                        if (theIDs.indexOf(obj.z) == -1) return;\n                        \n                        // Determine the filename extension\n                        let ext = '';\n                        if (obj.type == 'template') {\n                            ext = obj.format.toLowerCase();\n                            if (ext == 'handlebars' || ext == 'text') {\n                                ext = '';\n                            }\n                            if (ext == 'javascript') {\n                                ext = 'js';\n                            }\n                            if (ext != '') {\n                                ext = '.' + ext;\n                            }\n                        }\n                        if (obj.type == 'function') {\n                            ext = '.js';\n                        }\n                        let fname = obj.name.replace(/[^a-z0-9]/gi, '_');\n                        if (fname == '') {\n                            fname = 'untitled';\n                        }\n\n                        // Use existing extension in filename\n                        if (fname.indexOf('.') != -1) {\n                            ext = '.' + fname.getRightMost('.');\n                            fname = fname.delRightMost('.');\n                        }\n                        let file = path + '/' + theFolders[theIDs.indexOf(obj.z)] + '/' + fname + ext;\n                        let i = 2;\n\n                        // Iterate existing filenames\n                        while (existingFiles.indexOf(file) != -1) {\n                            file = path + '/' + theFolders[theIDs.indexOf(obj.z)] + '/' + fname + i.toString() + ext;\n                            i++;\n                        }\n                        obj.srcFiles = [];\n                        if (obj.type == 'template') {\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'template',\n                                file: file\n                            });\n                            existingFiles.push(file);\n                        } else if (obj.type == 'function') {\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'func',\n                                file: file\n                            });\n                            existingFiles.push(file);\n\n                            // Record function On Start and On Stop too\n                            let onStartFile = file;\n                            ext = onStartFile.getRightMost('.');\n                            onStartFile = onStartFile.delRightMost('.') + '_initialize' + ext;\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'initialize',\n                                file: onStartFile\n                            });\n                            let onStopFile = file;\n                            ext = onStopFile.getRightMost('.');\n                            onStopFile = onStopFile.delRightMost('.') + '_finalize' + ext;\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'finalize',\n                                file: onStopFile\n                            });\n                        }\n                        srcNodes.push(obj);\n                    });\n\n                    // Remove prior src folder\n                    fs.rmSync(path, { recursive: true, force: true });\n\n                    // Write the nodes to the src folder and record the manifest\n                    let manifest = [];\n                    srcNodes.forEach(function (obj) {\n                        obj.srcFiles.forEach(function (sF) {\n\n                            // Create the src path\n                            let sFPath = sF.file.delRightMost('/');\n                            if (!fs.existsSync(sFPath)) {\n                                fs.mkdirSync(sFPath, { recursive: true });\n                            }\n\n                            // Write the given file\n                            if (obj[sF.property] != '') {\n                                fs.writeFileSync(sF.file, obj[sF.property]);\n                                sF.file = sF.file.delLeftMost(path + '/');\n                                manifest.push(sF);\n                            }\n                        });\n                    });\n\n                    // Write the manifest to the src folder\n                    fs.writeFileSync(path + '/manifest.json', JSON.stringify(manifest, null, 4));\n                    node.status({ fill: \"green\", shape: \"dot\", text: \"updated files\" });\n                    setTimeout(function() {\n                        node.status({});\n                    }, 5000);\n                } catch(e) {\n                    node.error(e);\n                }\n            }\n\n            // Read src folder and update the flow\n            if (msg.action == 'src2flow') {\n                try {\n\n                    // Load the manifest\n                    if (!fs.existsSync(path + '/manifest.json')) return;\n                    let mn = JSON.parse(fs.readFileSync(path + '/manifest.json').toString());\n\n                    ff.forEach(function (obj) {\n                        mn.forEach(function(item) {\n                            if (item.id != obj.id) return;\n                            \n                            // Update the content from the external file\n                            let file = fs.readFileSync(path + '/' + item.file).toString();\n                            obj[item.property] = file;\n                        });\n                    });\n\n                    // Update the flow file\n                    fs.writeFileSync(flowFile, JSON.stringify(ff, null, 4));\n                } catch(e) {\n                    node.error(e);\n                }\n            }\n        });\n\n        // Automatic flow2src on deploys\n        if (config.chkAutoFlow2Src) {\n            node.receive({action:\"flow2src\", srcFolder: config.srcFolder});\n        }\n    }\n    RED.httpAdmin.post(\"/flow2src/:id\", RED.auth.needsPermission(\"inject.write\"), function (req, res) {\n        var node = RED.nodes.getNode(req.params.id);\n        if (node != null) {\n            try {\n                if (req.body) {\n                    node.receive(req.body);\n                } else {\n                    node.receive();\n                }\n                res.sendStatus(200);\n            } catch (err) {\n                res.sendStatus(500);\n                node.error(RED._(\"flow2src.failed\", { error: err.toString() }));\n            }\n        } else {\n            res.sendStatus(404);\n        }\n    });\n    RED.nodes.registerType('{{node_name}}', {{node_name}});\n}\n",
+        "template": "module.exports = function(RED) {\n    function {{node_name}}(config) {\n        RED.nodes.createNode(this, config);\n        var node = this;\n        node.on('input', function (msg) {\n            if (!msg.hasOwnProperty('srcFolder')) return;\n            if (msg.srcFolder.trim() == '') msg.srcFolder = 'src';\n\n            // String manipulation functions\n            (function () {\n                String.prototype.delRightMost = function(sFind) {\n                    for (var i = this.length; i >= 0; i = i - 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(0, f);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.getRightMost = function(sFind) {\n                    for (var i = this.length; i >= 0; i = i - 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(f + sFind.length, f + sFind.length + this.length);\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.delLeftMost = function(sFind) {\n                    for (var i = 0; i < this.length; i = i + 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(f + sFind.length, f + sFind.length + this.length);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n                String.prototype.getLeftMost = function(sFind) {\n                    for (var i = 0; i < this.length; i = i + 1) {\n                        var f = this.indexOf(sFind, i);\n                        if (f != -1) {\n                            return this.substring(0, f);\n                            break;\n                        }\n                    }\n                    return this;\n                };\n            })();\n\n            // Get the flowFile\n            const fs = require('fs');\n            let flowFile = RED.settings.userDir;\n            try{\n                if (RED.settings.get('editorTheme').projects.enabled) {\n                    let project = RED.settings.get('projects').activeProject;\n                    let package_json = flowFile + '/projects/' + project + '/package.json';\n\n                    // Read the package.json for the flowfile\n                    let pk = JSON.parse(fs.readFileSync(package_json).toString());\n                    flowFile += '/projects/' + project + '/' + pk['node-red']['settings']['flowFile'];\n                } else {\n                    flowFile += '/' + RED.settings.flowFile;\n                }\n            } catch(e) {\n                node.error(e);\n                return;\n            }\n\n            // Read and parse the flow file\n            let ff = JSON.parse(fs.readFileSync(flowFile).toString());\n            let path = flowFile.delRightMost('/') + '/' + msg.srcFolder;\n\n            // Write the relevant flow properties to the src folder\n            if (msg.action == 'flow2src') {\n                try {\n\n                    // Gather flows and subflows as an array\n                    let incFlows = [];\n                    if (config.incFlows.trim() != '*') {\n                        incFlows = config.incFlows.split(',').map(function (f) { return f.trim() });\n                    } else {\n                        incFlows = null;\n                    }\n                    let incSubflows = [];\n                    if (config.incSubflows.trim() != '*') {\n                        incSubflows = config.incSubflows.split(',').map(function (f) { return f.trim() });\n                    } else {\n                        incSubflows = null;\n                    }\n\n                    // Gather flow ids, folder safe names, and nodes for analysis in a single pass\n                    let theNodes = [];\n                    let theFolders = [];\n                    let theIDs = [];\n                    ff.forEach(function (obj) {\n\n                        // Check for matching flows\n                        if (obj.type == 'tab') {\n                            if (incFlows != null) {\n                                if (incFlows.indexOf(obj.label) == -1) {\n                                    return;\n                                }\n                            }\n                            theFolders.push(obj.label.replace(/[^a-z0-9]/gi, '_'));\n                            theIDs.push(obj.id);\n                        }\n\n                        // Check for matching subflows\n                        if (obj.type == 'subflow') {\n                            if (incSubflows != null) {\n                                if (incSubflows.indexOf(obj.name) == -1) {\n                                    return;\n                                }\n                            }\n                            theFolders.push(obj.name.replace(/[^a-z0-9]/gi, '_'));\n                            theIDs.push(obj.id);\n                        }\n                        // Gather nodes and templates\n                        if (obj.type == 'template' || obj.type == 'function' || obj.type == 'wp function') {\n                            theNodes.push(obj);\n                        }\n                    });\n\n                    // Narrow the nodes to just the flows and subflows we're interested in\n                    let existingFiles = [];\n                    let srcNodes = [];\n                    theNodes.forEach(function (obj) {\n                        if (theIDs.indexOf(obj.z) == -1) return;\n                        \n                        // Determine the filename extension\n                        let ext = '';\n                        if (obj.type == 'template') {\n                            ext = obj.format.toLowerCase();\n                            if (ext == 'handlebars' || ext == 'text') {\n                                ext = '';\n                            }\n                            if (ext == 'javascript') {\n                                ext = 'js';\n                            }\n                            if (ext != '') {\n                                ext = '.' + ext;\n                            }\n                        }\n                        if (obj.type == 'function') {\n                            ext = '.js';\n                        }\n                        if (obj.type == 'wp function') {\n                            ext = '.php';\n                        }\n                        let fname = obj.name.replace(/[^a-z0-9]/gi, '_');\n                        if (fname == '') {\n                            fname = 'untitled';\n                        }\n\n                        // Use existing extension in filename\n                        if (fname.indexOf('.') != -1) {\n                            ext = '.' + fname.getRightMost('.');\n                            fname = fname.delRightMost('.');\n                        }\n                        let file = path + '/' + theFolders[theIDs.indexOf(obj.z)] + '/' + fname + ext;\n                        let i = 2;\n\n                        // Iterate existing filenames\n                        while (existingFiles.indexOf(file) != -1) {\n                            file = path + '/' + theFolders[theIDs.indexOf(obj.z)] + '/' + fname + i.toString() + ext;\n                            i++;\n                        }\n                        obj.srcFiles = [];\n                        if (obj.type == 'template') {\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'template',\n                                file: file\n                            });\n                            existingFiles.push(file);\n                        } else if (obj.type == 'function') {\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'func',\n                                file: file\n                            });\n                            existingFiles.push(file);\n\n                            // Record function On Start and On Stop too\n                            let onStartFile = file;\n                            ext = onStartFile.getRightMost('.');\n                            onStartFile = onStartFile.delRightMost('.') + '_initialize' + ext;\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'initialize',\n                                file: onStartFile\n                            });\n                            let onStopFile = file;\n                            ext = onStopFile.getRightMost('.');\n                            onStopFile = onStopFile.delRightMost('.') + '_finalize' + ext;\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'finalize',\n                                file: onStopFile\n                            });\n                        } else if (obj.type == 'wp function') {\n                            obj.srcFiles.push({\n                                id: obj.id,\n                                property: 'func',\n                                file: file\n                            });\n                            existingFiles.push(file);\n                        }\n                        srcNodes.push(obj);\n                    });\n\n                    // Remove prior src folder\n                    fs.rmSync(path, { recursive: true, force: true });\n\n                    // Write the nodes to the src folder and record the manifest\n                    let manifest = [];\n                    srcNodes.forEach(function (obj) {\n                        obj.srcFiles.forEach(function (sF) {\n\n                            // Create the src path\n                            let sFPath = sF.file.delRightMost('/');\n                            if (!fs.existsSync(sFPath)) {\n                                fs.mkdirSync(sFPath, { recursive: true });\n                            }\n\n                            // Write the given file\n                            if (obj[sF.property] != '') {\n                                fs.writeFileSync(sF.file, obj[sF.property]);\n                                sF.file = sF.file.delLeftMost(path + '/');\n                                manifest.push(sF);\n                            }\n                        });\n                    });\n\n                    // Write the manifest to the src folder\n                    fs.writeFileSync(path + '/manifest.json', JSON.stringify(manifest, null, 4));\n                    node.status({ fill: \"green\", shape: \"dot\", text: \"updated files\" });\n                    setTimeout(function() {\n                        node.status({});\n                    }, 5000);\n                } catch(e) {\n                    node.error(e);\n                }\n            }\n\n            // Read src folder and update the flow\n            if (msg.action == 'src2flow') {\n                try {\n\n                    // Load the manifest\n                    if (!fs.existsSync(path + '/manifest.json')) return;\n                    let mn = JSON.parse(fs.readFileSync(path + '/manifest.json').toString());\n\n                    ff.forEach(function (obj) {\n                        mn.forEach(function(item) {\n                            if (item.id != obj.id) return;\n                            \n                            // Update the content from the external file\n                            let file = fs.readFileSync(path + '/' + item.file).toString();\n                            obj[item.property] = file;\n                        });\n                    });\n\n                    // Update the flow file\n                    fs.writeFileSync(flowFile, JSON.stringify(ff, null, 4));\n                } catch(e) {\n                    node.error(e);\n                }\n            }\n        });\n\n        // Automatic flow2src on deploys\n        if (config.chkAutoFlow2Src) {\n            node.receive({action:\"flow2src\", srcFolder: config.srcFolder});\n        }\n    }\n    RED.httpAdmin.post(\"/flow2src/:id\", RED.auth.needsPermission(\"inject.write\"), function (req, res) {\n        var node = RED.nodes.getNode(req.params.id);\n        if (node != null) {\n            try {\n                if (req.body) {\n                    node.receive(req.body);\n                } else {\n                    node.receive();\n                }\n                res.sendStatus(200);\n            } catch (err) {\n                res.sendStatus(500);\n                node.error(RED._(\"flow2src.failed\", { error: err.toString() }));\n            }\n        } else {\n            res.sendStatus(404);\n        }\n    });\n    RED.nodes.registerType('{{node_name}}', {{node_name}});\n}\n",
         "output": "str",
         "x": 390,
         "y": 340,
@@ -1992,7 +2007,7 @@
     {
         "id": "2d8b09ba98491392",
         "type": "subflow:7062e6f741533eb2",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2022,7 +2037,7 @@
     {
         "id": "5fc56e38b1aa13c4",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2042,7 +2057,7 @@
     {
         "id": "779ef02e60f7b7bb",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2062,7 +2077,7 @@
     {
         "id": "0d503039dc2aa5ec",
         "type": "subflow:7062e6f741533eb2",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2090,9 +2105,9 @@
         ]
     },
     {
-        "id": "99b985c6d10e4c57",
+        "id": "c0ece61b2be947ed",
         "type": "subflow:c70964ba34544694",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2132,7 +2147,7 @@
     {
         "id": "01a499dc7ba0538a",
         "type": "subflow:c70964ba34544694",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2170,22 +2185,22 @@
         ]
     },
     {
-        "id": "05ee1cee1d2cdd54",
+        "id": "52340adacb325477",
         "type": "subflow:9771d13dd19bf60f",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "x": 390,
         "y": 260,
         "wires": [
             [
-                "11b1fb0b3f0c08b9"
+                "84f6c1b1a2dab5cd"
             ]
         ]
     },
     {
         "id": "8452b129ecfc9b70",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2208,14 +2223,14 @@
         "y": 240,
         "wires": [
             [
-                "99b985c6d10e4c57"
+                "c0ece61b2be947ed"
             ]
         ]
     },
     {
         "id": "047efed160eb838a",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2235,7 +2250,7 @@
     {
         "id": "de169c9a0264b4b4",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2260,7 +2275,7 @@
     {
         "id": "5d39ab11e3c5e610",
         "type": "subflow:da6577bfc4038dbb",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2288,14 +2303,14 @@
         "y": 200,
         "wires": [
             [
-                "05ee1cee1d2cdd54"
+                "52340adacb325477"
             ]
         ]
     },
     {
         "id": "4e27c11373f8de67",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2318,9 +2333,9 @@
         ]
     },
     {
-        "id": "11b1fb0b3f0c08b9",
+        "id": "84f6c1b1a2dab5cd",
         "type": "template",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "nodemakerhtml",
         "field": "nodemakerhtml",
         "fieldType": "msg",
@@ -2339,7 +2354,7 @@
     {
         "id": "d7590193b23b49c5",
         "type": "subflow:7062e6f741533eb2",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2374,7 +2389,7 @@
     {
         "id": "e5067a7a4c311090",
         "type": "subflow:d0a39641213352a7",
-        "z": "230ae449a55a426f",
+        "z": "142274a930a39bbd",
         "name": "",
         "env": [
             {
@@ -2392,27 +2407,12 @@
         ]
     },
     {
-        "id": "cb1013b93ba4d83e",
-        "type": "junction",
-        "z": "230ae449a55a426f",
-        "x": 200,
-        "y": 560,
-        "wires": [
-            [
-                "269a8be2dc96e712"
-            ]
-        ]
-    },
-    {
-        "id": "269a8be2dc96e712",
-        "type": "junction",
-        "z": "230ae449a55a426f",
-        "x": 280,
-        "y": 60,
-        "wires": [
-            [
-                "e5067a7a4c311090"
-            ]
-        ]
+        "id": "8a8f094b96ed219d",
+        "type": "subflow:65d5e45697fed99a",
+        "z": "142274a930a39bbd",
+        "name": "",
+        "x": 390,
+        "y": 400,
+        "wires": []
     }
 ]
