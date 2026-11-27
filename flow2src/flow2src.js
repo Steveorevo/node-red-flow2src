@@ -155,7 +155,7 @@ module.exports = function(RED) {
                         if (obj.type == 'wp function') {
                             ext = '.php';
                         }
-                        let fname = obj.name.replace(/[^a-z0-9]/gi, '_');
+                        let fname = (obj.name || '').replace(/[^a-z0-9]/gi, '_');
                         if (fname == '') {
                             fname = 'untitled';
                         }
@@ -251,9 +251,13 @@ module.exports = function(RED) {
                                 fs.mkdirSync(sFPath, { recursive: true, mode: 0o777 });
                             }
 
-                            // Write the given file
-                            if (obj[sF.property] != '') {
-                                fs.writeFileSync(sF.file, obj[sF.property], { mode: 0o666 });
+                            // Write the given file. Missing properties (i.e. initialize/finalize on
+                            // nodes written by older Node-RED versions or imported JSON) must be
+                            // treated as empty rather than passed to writeFileSync, which throws
+                            // and aborts the export part way through.
+                            let content = obj[sF.property];
+                            if (typeof content === 'string' && content !== '') {
+                                fs.writeFileSync(sF.file, content, { mode: 0o666 });
                                 let base = sF.subflow ? subflowPath : flowPath;
                                 sF.file = sF.file.delLeftMost(base + '/');
                                 manifest.push(sF);
