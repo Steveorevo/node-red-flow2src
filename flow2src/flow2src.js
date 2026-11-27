@@ -202,7 +202,7 @@ module.exports = function(RED) {
                             // Record function On Start and On Stop too
                             let onStartFile = file;
                             ext = onStartFile.getRightMost('.');
-                            onStartFile = onStartFile.delRightMost('.') + '_initialize' + ext;
+                            onStartFile = onStartFile.delRightMost('.') + '_initialize.' + ext;
                             obj.srcFiles.push({
                                 id: obj.id,
                                 property: 'initialize',
@@ -211,7 +211,7 @@ module.exports = function(RED) {
                             });
                             let onStopFile = file;
                             ext = onStopFile.getRightMost('.');
-                            onStopFile = onStopFile.delRightMost('.') + '_finalize' + ext;
+                            onStopFile = onStopFile.delRightMost('.') + '_finalize.' + ext;
                             obj.srcFiles.push({
                                 id: obj.id,
                                 property: 'finalize',
