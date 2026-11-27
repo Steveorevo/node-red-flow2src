@@ -120,7 +120,7 @@ module.exports = function(RED) {
                             idMap[obj.id] = { folder: obj.name.replace(/[^a-z0-9]/gi, '_'), subflow: true };
                         }
                         // Gather nodes and templates
-                        if (obj.type == 'template' || obj.type == 'function' || obj.type == 'wp function') {
+                        if (obj.type == 'template' || obj.type == 'ui-template' || obj.type == 'function' || obj.type == 'wp function') {
                             theNodes.push(obj);
                         }
                     });
@@ -145,6 +145,9 @@ module.exports = function(RED) {
                             if (ext != '') {
                                 ext = '.' + ext;
                             }
+                        }
+                        if (obj.type == 'ui-template') {
+                            ext = '.html';
                         }
                         if (obj.type == 'function') {
                             ext = '.js';
@@ -178,6 +181,13 @@ module.exports = function(RED) {
                                 property: 'template',
                                 file: file,
                                 subflow: info.subflow
+                            });
+                            existingFiles.push(file);
+                        } else if (obj.type == 'ui-template') {
+                            obj.srcFiles.push({
+                                id: obj.id,
+                                property: 'format',
+                                file: file
                             });
                             existingFiles.push(file);
                         } else if (obj.type == 'function') {
