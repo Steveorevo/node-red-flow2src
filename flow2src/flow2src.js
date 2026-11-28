@@ -155,15 +155,19 @@ module.exports = function(RED) {
                         if (obj.type == 'wp function') {
                             ext = '.php';
                         }
-                        let fname = (obj.name || '').replace(/[^a-z0-9]/gi, '_');
+                        // An extension given in the node's name wins over the one derived
+                        // from the node type/format. Pull it off BEFORE sanitising, because
+                        // sanitising turns "nodemaker.js" into "nodemaker_js" and the
+                        // override check could then never match.
+                        let namePart = obj.name || '';
+                        let nameDot = namePart.lastIndexOf('.');
+                        if (nameDot > 0 && nameDot < namePart.length - 1) {
+                            ext = '.' + namePart.slice(nameDot + 1);
+                            namePart = namePart.slice(0, nameDot);
+                        }
+                        let fname = namePart.replace(/[^a-z0-9]/gi, '_');
                         if (fname == '') {
                             fname = 'untitled';
-                        }
-
-                        // Use existing extension in filename
-                        if (fname.indexOf('.') != -1) {
-                            ext = '.' + fname.getRightMost('.');
-                            fname = fname.delRightMost('.');
                         }
                         let base = info.subflow ? subflowPath : flowPath;
                         let file = base + '/' + info.folder + '/' + fname + ext;
