@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.3] - 2026-11-27
+
+An extension given in a node's name is honoured again. The name was sanitised before the extension was taken from it, so naming a node nodemaker.js produced nodemaker_js with no extension.
+
 ## [1.2.2] - 2026-11-27
 
 Fixed an export that stopped part way through when a node was missing an optional property, which left most subflows with no files in src and reported only to the runtime log (issue #2).
